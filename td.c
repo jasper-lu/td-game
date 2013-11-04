@@ -12,6 +12,7 @@ void main (int argc, char * argv[]) {
     char *map[24][80] = {' '}; 
 
     char c = ' ';
+    char d = 'T';
     int row = 1,col = 1;
 
     xt_par2(XT_SET_ROW_COL_POS,row=1,col=1);
@@ -40,6 +41,8 @@ void main (int argc, char * argv[]) {
 	{
 	    xt_par2(XT_SET_ROW_COL_POS,row,--col);
 	}
+	else if (c == ' ')
+	  putchar(d);
     }
 }
 
