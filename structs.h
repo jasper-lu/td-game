@@ -8,5 +8,10 @@ typedef struct
     int x, y, _n, health;
 }Mob;
 
+typedef struct
+{
+  int x, y;
+}Tower;
+
 Mob init_mob(int x, int y);
 int move_mob(Mob *mob);
