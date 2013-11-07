@@ -25,6 +25,8 @@ int main() {
     xt_par2(XT_SET_ROW_COL_POS,1,1);
 
     init_map(map, ROWS, COLS);
+    Tower* arr;
+    arr = malloc(sizeof(Tower) * 10);
 
     int row = 1;
     int col = 1;
@@ -71,6 +73,15 @@ int main() {
 	else if (c == KEY_LEFT && col > 1)
 	{
 	    xt_par2(XT_SET_ROW_COL_POS,row,--col);
+	}
+	else if (c == 'T' || c == 't'  && map[row][col] == 'X')
+	{
+	    putchar('T');
+	    Tower A;
+	    A.x = col;
+	    A.y = row;
+	    arr[i] = A;
+	    i++;
 	}
     }
     getkey_terminate();
