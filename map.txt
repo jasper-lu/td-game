@@ -1,4 +1,4 @@
-N O XXXXXXXXXXXXXXXXX
+X O XXXXXXXXXXXXXXXXX
 x   xxxxxxxxxxxxxxxxx
 x                  xx
 xxxxxxxxxxxxxxxx   xx
@@ -7,4 +7,5 @@ X             XX   XX
 X   XXXXXX    XX   XX
 X   XXXXXX         XX
 X   XXXXXXXXXXXXXXXXX
+X O XXXXXXXXXXXXXXXXX  
 X O XXXXXXXXXXXXXXXXX  

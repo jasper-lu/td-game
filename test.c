@@ -8,10 +8,17 @@
 #include "xterm_control.h" 
 
 int main() {
+
     fflush(stdout);
     Mob MOBS[10];
 
     char **map;
+    map = malloc(sizeof(char*) * ROWS); 
+
+    int i;
+    for (i = 0;  i < COLS + 2; ++i)
+	map[i] = malloc(sizeof(char) * (COLS * 2));
+
     MOBS[0] = init_mob(2,1);
 
     xt_par0(XT_CLEAR_SCREEN);
@@ -28,11 +35,19 @@ int main() {
     while(1)
     {
 	while ((c = getkey()) == KEY_NOTHING){
-	    xt_par2(XT_SET_ROW_COL_POS, MOBS[0].y + 1,MOBS[0].x + 1);
-	    putchar('M');
-	    usleep(1000000 / FPS);
+
+	    xt_par0(XT_CLEAR_SCREEN);
+	    xt_par2(XT_SET_ROW_COL_POS,1,1);
 	    move_mob(&MOBS[0]);
-	    xt_par2(XT_SET_ROW_COL_POS, row, col);
+
+	    draw_map(map, ROWS, COLS);
+
+	    xt_par2(XT_SET_ROW_COL_POS, MOBS[0].y + 1,MOBS[0].x + 1);
+
+	    putchar('M');
+
+	    xt_par2(XT_SET_ROW_COL_POS, row,col);
+	    usleep(1000000 / FPS);
 	} ;
 
 	if(c == KEY_F9) 
@@ -57,8 +72,6 @@ int main() {
 	{
 	    xt_par2(XT_SET_ROW_COL_POS,row,--col);
 	}
-	if(*map[MOBS[0].y, MOBS[0].x] == 'O')
-	    break;
     }
     getkey_terminate();
 
