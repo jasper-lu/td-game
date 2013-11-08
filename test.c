@@ -9,7 +9,8 @@
 
 int main() {
 
-    fflush(stdout);
+    setbuf(stdout,NULL);
+
     Mob MOBS[10];
 
     char **map;
@@ -36,23 +37,10 @@ int main() {
 
     while(1)
     {
-	while ((c = getkey()) == KEY_NOTHING){
+	if ((c = getkey()) == KEY_NOTHING){
 
-	    xt_par0(XT_CLEAR_SCREEN);
-	    xt_par2(XT_SET_ROW_COL_POS,1,1);
-	    move_mob(&MOBS[0]);
-
-	    draw_map(map, ROWS, COLS);
-
-	    xt_par2(XT_SET_ROW_COL_POS, MOBS[0].y + 1,MOBS[0].x + 1);
-
-	    putchar('M');
-
-	    xt_par2(XT_SET_ROW_COL_POS, row,col);
-	    usleep(1000000 / FPS);
-	} ;
-
-	if(c == KEY_F9) 
+	}
+	else if(c == KEY_F9) 
 	{
 	    xt_par0(XT_CLEAR_SCREEN);
 	    xt_par2(XT_SET_ROW_COL_POS,row=1,col=1);
@@ -83,6 +71,20 @@ int main() {
 	    arr[i] = A;
 	    i++;
 	}
+
+	xt_par0(XT_CLEAR_SCREEN);
+	xt_par2(XT_SET_ROW_COL_POS,1,1);
+
+	draw_map(map, ROWS, COLS);
+
+	move_mob(&MOBS[0]);
+	xt_par2(XT_SET_ROW_COL_POS, MOBS[0].y + 1,MOBS[0].x + 1);
+
+	putchar('M');
+
+	xt_par2(XT_SET_ROW_COL_POS, row,col);
+
+	usleep(1000000 / FPS);
     }
     getkey_terminate();
 
