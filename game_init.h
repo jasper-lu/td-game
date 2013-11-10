@@ -3,9 +3,20 @@
 #define ROWS 10
 #define COLS 20
 
-void draw_map(char **map, const unsigned int row_size, const unsigned int col_size)
+void draw_towers(Tower *arr, int n)
+{
+    int i;
+    for (i = 0; i != n; ++i)
+    {
+	xt_par2(XT_SET_ROW_COL_POS,arr[i].y,arr[i].x);
+	printf("T");
+    }
+}
+
+void draw_map(char **map, const unsigned int row_size, const unsigned int col_size, Tower* arr, int arr_size)
 {
     int r, c;
+    printf(XT_CH_GREEN);
     for(r = 0; r < row_size; ++r)
     {
 	for(c = 0; c < col_size + 2; ++c)
@@ -13,18 +24,19 @@ void draw_map(char **map, const unsigned int row_size, const unsigned int col_si
 	    char blah = map[r][c];
 	    if(blah == 'X')
 	    {
-		xt_par2(XT_BG_GREEN,r,c);
+		xt_par2(XT_BG_BLUE,r,c);
 	    }else if(blah == ' '){
-		xt_par0(XT_BG_DEFAULT);
+		xt_par2(XT_BG_DEFAULT,r,c);
 	    }else{
-		xt_par0(XT_BG_DEFAULT);
+		xt_par2(XT_BG_DEFAULT,r,c);
 	    }
 	    printf("%c", map[r][c]);
+	    xt_par2(XT_BG_DEFAULT,r,c);
 
 	//    printf("O");
 	}
     }
-    printf(XT_CH_NORMAL);
+    draw_towers(arr,arr_size); 
 }
 
 void init_map(char** map, const unsigned int row_size, const unsigned int col_size)
