@@ -5,15 +5,29 @@
 
 void draw_towers(Tower *arr, int n)
 {
+	int i;
+	for (i = 0; i < n; ++i)
+	{
+	    xt_par2(XT_SET_ROW_COL_POS,arr[i].y,arr[i].x);
+	    printf("T");
+	}
+}
+
+void draw_mobs(Mob *mobs, int n)
+{
     int i;
-    for (i = 0; i != n; ++i)
+    for(i = 0; i < n; ++i)
     {
-	xt_par2(XT_SET_ROW_COL_POS,arr[i].y,arr[i].x);
-	printf("T");
+	if(mobs->health > 0)
+	{
+	    xt_par2(XT_SET_ROW_COL_POS,mobs[i].y+1,mobs[i].x+1);
+	    printf("M");
+	}
+	++mobs;
     }
 }
 
-void draw_map(char **map, const unsigned int row_size, const unsigned int col_size, Tower* arr, int arr_size)
+void draw_map(char **map, const unsigned int row_size, const unsigned int col_size, Tower* arr, int arr_size, Mob* mobs, int mob_size)
 {
     int r, c;
     printf(XT_CH_GREEN);
@@ -33,10 +47,11 @@ void draw_map(char **map, const unsigned int row_size, const unsigned int col_si
 	    printf("%c", map[r][c]);
 	    xt_par2(XT_BG_DEFAULT,r,c);
 
-	//    printf("O");
+	    //    printf("O");
 	}
     }
     draw_towers(arr,arr_size); 
+    draw_mobs(mobs,mob_size);
 }
 
 void init_map(char** map, const unsigned int row_size, const unsigned int col_size)

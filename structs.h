@@ -14,4 +14,4 @@ typedef struct
 }Tower;
 
 Mob init_mob(int x, int y);
-int move_mob(Mob *mob);
+void move_mob(Mob *mob, int mob_size);
