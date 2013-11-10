@@ -10,5 +10,5 @@ keyboard.o: keyboard.c
 xterm_control.o: xterm_control.c
 	gcc -c xterm_control.c
 
-structs.o: structs.c structs.h
-	gcc -c structs.c structs.h
+structs.o: structs.c
+	gcc -c structs.c 
