@@ -18,7 +18,7 @@ int main() {
 
   int i,Score;
   for (i = 0;  i < COLS + 2; ++i)
-    map[i] = malloc(sizeof(char) * (COLS * 2));
+    map[i] = malloc(sizeof(char) * (COLS + 2));
 
   MOBS = malloc(sizeof(Mob) * 10);
   MOBS[0] = init_mob(2,1);
