@@ -10,7 +10,7 @@ typedef struct
 
 typedef struct
 {
-    int x, y, dmg;
+  int x, y, dmg, score;
 }Tower;
 
 
