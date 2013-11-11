@@ -10,8 +10,10 @@ typedef struct
 
 typedef struct
 {
-  int x, y;
+    int x, y, dmg;
 }Tower;
+
 
 Mob init_mob(int x, int y);
 void move_mob(Mob *mob, int mob_size);
+

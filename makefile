@@ -1,8 +1,14 @@
-test:	test.o keyboard.o xterm_control.o structs.o
+game:	game.o keyboard.o xterm_control.o structs.o
+	gcc game.o keyboard.o xterm_control.o structs.o -o game
+
+test: test.o keyboard.o xterm_control.o structs.o
 	gcc test.o keyboard.o xterm_control.o structs.o -o test
 	
-test.o:	test.c
+test.o: test.c
 	gcc -c test.c
+
+game.o:	game.c
+	gcc -c game.c
 	
 keyboard.o: keyboard.c
 	gcc -c keyboard.c
