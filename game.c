@@ -74,8 +74,8 @@ int main() {
 	  A.y = row;
 	  arr[i] = A;
 	  i++;
-	  Score += A.score;
 	}
+      Score = arr[0].score;
 
       if(i > 0)
 	tower_logic(arr, MOBS, mob_size);

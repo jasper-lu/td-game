@@ -49,8 +49,8 @@ void tower_logic(Tower *a, Mob *b, int mob_size)
 	if(b->health > 0 && abs(a->x - b-> x) <= 2 && abs(a->y - b->y) <=2)
 	{
 	    --(b->health);
+	    if (b->health == 0)
+		a->score += 10;
 	}
     } 
-	if (b->health == 0)
-	  a->score += 10;
 }
