@@ -34,13 +34,22 @@ Node_heap* init_Node_heap()
     return heap;
 }
 
+int compare(Node* lhs, Node * rh)
+{
+    return (lhs->f + lhs->h) - (rhs->f + rhs->h);
+}
+
 void insert(Node *x, Node_heap* heap)
 {
-    heap->heap[heap->size] = x;
+    int n = ++size;
+    for(; n > 0 && compare(x, heap.heap[(n/2) -1]) < 0; n=(n/2)-1)
+    {
+	Node *temp = heap.heap[(n/2)-1];
+    }
+    heap.heap[n] = x;    
 }
 
 Node* getMin(Node_heap* heap)
 {
     return heap->heap[0];
 }
-

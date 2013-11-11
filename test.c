@@ -12,12 +12,14 @@ int main ()
 
     Node *sing=init_Node();
     Node *next=init_Node();
-    sing-> x = 100009;
+    sing-> f = 9;
+    next-> x = 19;
 
     Node_heap * heapp = init_Node_heap();
 
     sing->parent = next;
     insert(sing, heapp);
+    insert(next, heapp);
     printf("%d",getMin(heapp)->x);
 
 }
