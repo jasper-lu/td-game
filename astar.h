@@ -26,11 +26,12 @@ struct Node_heap
     int size;
 };
 
-void init_Node_heap()
+Node_heap* init_Node_heap()
 {
-    Node_heap *heap; 
+    Node_heap *heap = malloc(sizeof(Node_heap)); 
     heap->heap = malloc(sizeof(Node) * 1600);
     heap->size = 0;
+    return heap;
 }
 
 void insert(Node *x, Node_heap* heap)
@@ -38,7 +39,8 @@ void insert(Node *x, Node_heap* heap)
     heap->heap[heap->size] = x;
 }
 
-Node* getMin()
+Node* getMin(Node_heap* heap)
 {
+    return heap->heap[0];
 }
 

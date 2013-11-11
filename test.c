@@ -9,15 +9,15 @@ int main ()
 	{' ',' ',' '},
 	{' ',' ','O'}
     };
+
     Node *sing=init_Node();
     Node *next=init_Node();
+    sing-> x = 100009;
 
-   sing->parent = next;
+    Node_heap * heapp = init_Node_heap();
 
-//    Node_heap * heapp = init_Node_heap();
- //   insert(blah, heapp);
-	printf("|%d|",sing->x);
-	printf("|%d|",next->x);
-	printf("|%d|",sing->parent->y);
-	printf("|%d|",sing->parent->f);
+    sing->parent = next;
+    insert(sing, heapp);
+    printf("%d",getMin(heapp)->x);
+
 }
