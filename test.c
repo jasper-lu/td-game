@@ -23,18 +23,27 @@ int main ()
 
     for(i = 0; i < ROWS; i++)
     {
-	for(j = 0; j < COLS + 2; j++)
+	for(j = 0; j < COLS + 1; j++)
 	{
 	    ch = fgetc(fp);
 	    map[i][j] = ch;
 	}
     }
 
+//    printf("map 0,1: %c",map[1][0]);
     fclose(fp);
 
     Point s = init_Point(1,1);
     Point e = init_Point(3,3);
-    astar(s,e,map);
+    printf("%d,%d : \n",  s.x,s.y);
+    s = astar(s,e,map);
+    printf("%d,%d : \n",  s.x,s.y);
+    s = astar(s,e,map);
+    printf("%d,%d : \n",  s.x,s.y);
+    s = astar(s,e,map);
+    printf("%d,%d : \n",  s.x,s.y);
+    s = astar(s,e,map);
+    printf("%d,%d : \n",  s.x,s.y);
     /*
        Node *a = init_NodeP(init_Point(3,5));
        Node *b = init_Node();
