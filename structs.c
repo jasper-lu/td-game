@@ -50,5 +50,7 @@ void tower_logic(Tower *a, Mob *b, int mob_size)
 	{
 	    --(b->health);
 	}
-    }
+    } 
+	if (b->health == 0)
+	  a->score += 10;
 }
