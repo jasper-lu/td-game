@@ -28,16 +28,11 @@ int main ()
     insert(a, heapp);
     insert(b, heapp);
     insert(c, heapp);
-    /*
     insert(d, heapp);
     insert(e, heapp);
-    */
-     
     printf("%d\n",pop(heapp)->f);
     printf("%d\n",pop(heapp)->f);
-    /*
-    printf("%d\n",removeMin(heapp)->f);
-    printf("%d\n",removeMin(heapp)->f);
-    printf("%d\n",removeMin(heapp)->f);
-    */
+    printf("%d\n",pop(heapp)->f);
+    printf("%d\n",pop(heapp)->f);
+    printf("%d\n",pop(heapp)->f);
 }

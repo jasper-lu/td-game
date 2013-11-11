@@ -34,41 +34,17 @@ int compare(Node* lhs, Node * rhs)
 }
 void insert(Node *x, Node_heap* heap)
 {
-    printf("yo\n");
         heap->size++;
         heap->heap[heap->size] = x; /*Insert in the last place*/
         /*Adjust its position*/
         int now = heap->size;
 	while(now > 1 && compare(heap->heap[now/2], x) > 0)
         {
-                heap[now] = heap[now/2];
+                heap->heap[now] = heap->heap[now/2];
                 now /= 2;
         }
         heap->heap[now] = x;
 }
-/*
-void insert(Node *x, Node_heap* heap)
-{
-    printf("in\n");
-    int n = (heap->size)++;
-    for(; n > 1 && compare(x, heap->heap[(n/2) -1]) < 0; n=(n/2)-1)
-    {
-	heap->heap[(n/2)-1] = heap->heap[n];
-    }
-    if(n == 1 && compare(x,heap->heap[0]) < 0)
-    {
-	heap->heap[1] = heap->heap[0];
-	n = 0;
-    }
-    heap->heap[n] = x;    
-}
-
-Node* getMin(Node_heap* heap)
-{
-    Node* ret = heap->heap[0];
-    return ret;
-}
-*/
 
 void swap(Node **a, Node **b)
 {
@@ -87,7 +63,8 @@ Node* pop(Node_heap * heap)
 	Node* lastElement;
 	int now, child;
         minElement = heap->heap[1];
-        lastElement = heap->heap[(heap->size)--];
+        lastElement = heap->heap[heap->size];
+	heap->size--;
         /* now refers to the index at which we are now */
         for(now = 1; now*2 <= heap->size ;now = child)
         {
@@ -98,20 +75,16 @@ Node* pop(Node_heap * heap)
                   child */
                 if(child != heap->size && compare(heap->heap[child+1],heap->heap[child]) < 0) 
                 {
-		    printf("first if is fine\n");
                         child++;
                 }
                 /* To check if the last element fits ot not it suffices to check if the last element
                    is less than the minimum element among both the children*/
-		printf("%d\n", lastElement->f);
                 if(compare(lastElement,heap->heap[child]) > 0)
                 {
-		    printf("inside 2nd if\n");
                         heap->heap[now] = heap->heap[child];
                 }
                 else /* It fits there */
                 {
-		    printf("can't be here\n");
                         break;
                 }
         }
