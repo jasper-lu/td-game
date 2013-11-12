@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include "astar.h"
 #include "structs.h"
-#include "launch.h"
 #include "keyboard.h"
-#include "game_init.h"
 #include "xterm_control.h" 
+#include "game_init.h"
 
 int main() {
 
@@ -20,8 +20,8 @@ int main() {
   for (i = 0;  i < COLS + 2; ++i)
     map[i] = malloc(sizeof(char) * (COLS + 2));
 
-  MOBS = malloc(sizeof(Mob) * 10);
-  MOBS[0] = init_mob(2,1);
+  MOBS = malloc(sizeof(Mob) * 100);
+  MOBS[0] = init_mob(1,1);
   int mob_size = 1;
 
   xt_par0(XT_CLEAR_SCREEN);
@@ -30,7 +30,7 @@ int main() {
   init_map(map, ROWS, COLS);
   Tower* arr;
   i = 0;
-  arr = malloc(sizeof(Tower) * 10);
+  arr = malloc(sizeof(Tower) * 100);
 
   int row = 1;
   int col = 1;
@@ -38,6 +38,11 @@ int main() {
 
   char c;
 
+  Point finish = init_Point(18,8);
+
+  printf("Before game loop \n");
+
+  int move_c = 0;
   while(1)
     {
       if ((c = getkey()) == KEY_NOTHING){
@@ -65,22 +70,32 @@ int main() {
 	{
 	  xt_par2(XT_SET_ROW_COL_POS,row,--col);
 	}
-      else if ((c == 'T' || c == 't') && map[row-1][col-1] == 'X')
+      else if ((c == 'T' || c == 't') )
 	{
 	  putchar('T');
-	  map[row][col] == 'T';
-	  Tower A;
-	  A.x = col;
-	  A.y = row;
+	  map[row - 1][col - 1] = 'T';
+	  Tower A = init_Tower(col-1,row-1);
 	  arr[i] = A;
 	  i++;
+	}else if (c == 'r')
+	{
+	    printf("hi");
+	    if(move_c == 0)
+		move_c = 1;
+	    else
+		move_c = 0;
 	}
-      Score = arr[0].score;
 
-      if(i > 0)
+     if(i > 0)
 	tower_logic(arr, MOBS, mob_size);
-
-      move_mob(&MOBS[0], mob_size);
+    
+      if(move_c == 4)
+      {
+	  move_mob(&MOBS[0], mob_size, &finish, map);
+	  move_c = 0;
+      }else{
+	  ++move_c;
+      }
 
       xt_par0(XT_CLEAR_SCREEN);
       xt_par2(XT_SET_ROW_COL_POS,1,1);
@@ -93,12 +108,18 @@ int main() {
       xt_par2(XT_SET_ROW_COL_POS, row,col);
       
       xt_par2(XT_SET_ROW_COL_POS, 15, 0);
-      printf("Score:%d\n",Score);
-
-      
+      printf("Score:%d\n location of mob: %d,%d\n",Score,MOBS->x,MOBS->y);      
       xt_par2(XT_SET_ROW_COL_POS, row,col);
 
+      if(loser(MOBS, &finish))
+      {
+	  printf("YOU LOSE,\n LOSER\n TRY AGAIN NEXT TIME \n");
+//	  usleep(3000000);
+	  break;
+      }
+
       usleep(1000000 / FPS);
+//	usleep(1000000);
     }
   getkey_terminate();
 
@@ -106,5 +127,6 @@ int main() {
   xt_par2(XT_SET_ROW_COL_POS,1,1);
     
 
-  free(map);
+  free(MOBS);
+  free(arr);
 }
