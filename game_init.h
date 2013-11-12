@@ -8,7 +8,7 @@ void draw_towers(Tower *arr, int n)
 	int i;
 	for (i = 0; i < n; ++i)
 	{
-	    xt_par2(XT_SET_ROW_COL_POS,arr[i].y,arr[i].x);
+	    xt_par2(XT_SET_ROW_COL_POS,arr[i].y+1,arr[i].x+1);
 	    printf("T");
 	}
 }
@@ -64,7 +64,7 @@ void init_map(char** map, const unsigned int row_size, const unsigned int col_si
 
     for(i = 0; i < ROWS; i++)
     {
-	for(j = 0; j < COLS + 2; j++)
+	for(j = 0; j < COLS + 1; j++)
 	{
 	    ch = fgetc(fp);
 	    map[i][j] = ch;

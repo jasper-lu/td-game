@@ -2,8 +2,8 @@
 #include "stdio.h"
 #include "astar.h"
 #include "structs.h"
-#define ROWS 5
-#define COLS 5
+#define ROWS 10
+#define COLS 20
 
 int main ()
 {
@@ -16,7 +16,7 @@ int main ()
     }    
 
     FILE *fp;
-    fp = fopen("test.txt", "r");
+    fp = fopen("map.txt", "r");
     char ch;
 
     int j;
@@ -34,7 +34,23 @@ int main ()
     fclose(fp);
 
     Point s = init_Point(1,1);
-    Point e = init_Point(3,3);
+    Point e = init_Point(2,8);
+    printf("%d,%d : \n",  s.x,s.y);
+    s = astar(s,e,map);
+    printf("%d,%d : \n",  s.x,s.y);
+    s = astar(s,e,map);
+    printf("%d,%d : \n",  s.x,s.y);
+    s = astar(s,e,map);
+    printf("%d,%d : \n",  s.x,s.y);
+    s = astar(s,e,map);
+    printf("%d,%d : \n",  s.x,s.y);
+    s = astar(s,e,map);
+    printf("%d,%d : \n",  s.x,s.y);
+    s = astar(s,e,map);
+    printf("%d,%d : \n",  s.x,s.y);
+    s = astar(s,e,map);
+    printf("%d,%d : \n",  s.x,s.y);
+    s = astar(s,e,map);
     printf("%d,%d : \n",  s.x,s.y);
     s = astar(s,e,map);
     printf("%d,%d : \n",  s.x,s.y);
