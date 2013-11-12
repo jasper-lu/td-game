@@ -7,6 +7,9 @@
 #include "xterm_control.h" 
 #include "game_init.h"
 
+int Moneh = 100;
+int Score = 0;
+
 int main() {
 
     setbuf(stdout,NULL);
@@ -19,7 +22,7 @@ int main() {
     char **map;
     map = malloc(sizeof(char*) * ROWS); 
 
-    int i,Score;
+    int i;
     for (i = 0;  i < COLS + 2; ++i)
 	map[i] = malloc(sizeof(char) * (COLS + 2));
 
@@ -47,6 +50,7 @@ int main() {
     int wave_start = 0;
     int next_wave_total = 1;
     int spawn_count = 0;
+    int attack = 1;
 
     while(1)
     {
@@ -77,11 +81,15 @@ int main() {
 	}
 	else if ((c == 'T' || c == 't') )
 	{
-	    putchar('T');
-	    map[row - 1][col - 1] = 'T';
-	    Tower A = init_Tower(col-1,row-1);
-	    arr[i] = A;
-	    i++;
+	    if(Moneh >= 80 || attack == 0)
+	    {
+		putchar('T');
+		map[row - 1][col - 1] = 'T';
+		Tower A = init_Tower(col-1,row-1);
+		arr[i] = A;
+		i++;
+		Moneh -= 80;
+	    }
 	}else if (c == 'r')
 	{
 	    if(wave_start == 0)
@@ -89,7 +97,12 @@ int main() {
 		spawn_count = next_wave_total;
 		++wave_start;
 	    }
-	}
+	}else if (c == ' '){
+	   if(attack == 0)
+	      attack = 1;
+	   else
+	      attack = 0;
+	} 
 
 
 	if(wave_start == 1)
@@ -109,8 +122,11 @@ int main() {
 	    }else{
 		++move_c;
 	    }
-	    if(i > 0)
-		tower_logic(arr, MOBS, i,mob_size);
+	    int z = 0;
+	    if(i > 0 && attack == 1)
+		z = tower_logic(arr, MOBS, i,mob_size);
+	    Score += z*10;
+	    Moneh +=z*20;
 	}
 
 	xt_par0(XT_CLEAR_SCREEN);
@@ -124,13 +140,13 @@ int main() {
 	xt_par2(XT_SET_ROW_COL_POS, row,col);
 
 	xt_par2(XT_SET_ROW_COL_POS, 15, 0);
-	printf("Score:%d\n size of : %d\n",Score,i);      
+	printf("Score:%d\n Money: %d\n",Score,Moneh);      
 	xt_par2(XT_SET_ROW_COL_POS, row,col);
 
 	if(loser(MOBS, &finish))
 	{
 	    printf("YOU LOSE,\n LOSER\n TRY AGAIN NEXT TIME \n");
-	    //	  usleep(3000000);
+	    usleep(3000000);
 	    break;
 	}
 

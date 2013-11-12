@@ -64,9 +64,10 @@ Tower init_Tower(int x, int y)
     return A;
 }
 
-void tower_logic(Tower *a, Mob *b, int tower_size, int mob_size)
+int tower_logic(Tower *a, Mob *b, int tower_size, int mob_size)
 {
     int n, m;
+    int ret = 0;
     for(m = 0; m < tower_size;++m)
     {
 	for(n = 0; n != mob_size; ++n)
@@ -75,13 +76,14 @@ void tower_logic(Tower *a, Mob *b, int tower_size, int mob_size)
 	    {
 		b->health = b->health - a->dmg;
 		if (b->health == 0)
-		    Score += 10;
+		    ret++;
 		break;
 	    }
 	    ++b;
 	} 
 	++a;
     }
+    return ret;
 }
 
 int loser(Mob* mob, struct Point* end)
