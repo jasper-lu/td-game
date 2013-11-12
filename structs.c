@@ -18,35 +18,40 @@ Mob init_mob(int x, int y)
 void move_mob(Mob *mob, int mob_size, struct Point* end, char **map)
 {
     /*
-    int i; for(i = 0; i <= mob_size; ++i)
-    {
-	if(mob->_n < 40)
-	{
-	    switch (PATH[mob->_n])
-	    {
-		case U:
-		    --(mob->y);
-		    break;
-		case R:
-		    ++(mob->x);
-		    break;
-		case D:
-		    ++(mob->y);
-		    break;
-		case L:
-		    --(mob->x);
-		    break;
-	    }
-	    ++(mob->_n);
-	}
-	++i;
-    }
-    */
+       int i; for(i = 0; i <= mob_size; ++i)
+       {
+       if(mob->_n < 40)
+       {
+       switch (PATH[mob->_n])
+       {
+       case U:
+       --(mob->y);
+       break;
+       case R:
+       ++(mob->x);
+       break;
+       case D:
+       ++(mob->y);
+       break;
+       case L:
+       --(mob->x);
+       break;
+       }
+       ++(mob->_n);
+       }
+       ++i;
+       }
+       */
     //printf("astar\n");
-    Point b = astar(init_Point(mob->x,mob->y),*end,map);
-    //printf("astar after \n");
-    mob->x = b.x;
-    mob->y = b.y;
+    int i;
+    for(i = 0; i < mob_size; ++i)
+    {
+	Point b = astar(init_Point(mob->x,mob->y),*end,map);
+	//printf("astar after \n");
+	mob->x = b.x;
+	mob->y = b.y;
+	++mob;
+    }
 }
 
 Tower init_Tower(int x, int y)
@@ -56,19 +61,24 @@ Tower init_Tower(int x, int y)
     return A;
 }
 
-void tower_logic(Tower *a, Mob *b, int mob_size)
+void tower_logic(Tower *a, Mob *b, int tower_size, int mob_size)
 {
-    int n;
-    for(n = 0; n != mob_size; ++n)
+    int n, m;
+    for(m = 0; m != tower_size;++m)
     {
-	if(b->health > 0 && abs(a->x - b-> x) <= 2 && abs(a->y - b->y) <=2)
+	for(n = 0; n != mob_size; ++n)
 	{
-	    b->health = b->health - a->dmg;
-	    if (b->health == 0)
-		Score += 10;
-	}
-	++b;
-    } 
+	    if(b->health > 0 && abs(a->x - b-> x) <= 2 && abs(a->y - b->y) <=2)
+	    {
+		b->health = b->health - a->dmg;
+		if (b->health == 0)
+		    Score += 10;
+		break;
+	    }
+	    ++b;
+	} 
+	++a;
+    }
 }
 
 int loser(Mob* mob, struct Point* end)
@@ -78,3 +88,23 @@ int loser(Mob* mob, struct Point* end)
     else
 	return 0;
 }
+
+int round_won(Mob* mob, int* mob_size)
+{
+    int i;
+    for(i = 0; i < *mob_size; ++i)
+    {
+	if(mob->health > 0)
+	    return 0;
+	++mob;
+    }
+    *mob_size = 0;
+    return 1;
+}
+
+int spawn(Mob* mob, int* mob_size, struct Point spawn_point, int count)
+{
+    mob[*mob_size] = init_mob(spawn_point.x,spawn_point.y);
+    ++(*mob_size);
+    return --count;
+} 

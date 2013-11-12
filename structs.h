@@ -21,3 +21,7 @@ void move_mob(Mob *mob, int mob_size, struct Point* end, char **map);
 Tower init_Tower(int x, int y);
 
 int loser(Mob* mob, struct Point* end);
+
+int spawn(Mob* mob, int *mob_size, struct Point spawn_point, int count);
+
+int round_won(Mob* mob, int* mob_size);

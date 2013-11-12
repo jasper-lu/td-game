@@ -20,7 +20,7 @@ void draw_mobs(Mob *mobs, int n)
     {
 	if(mobs->health > 0)
 	{
-	    xt_par2(XT_SET_ROW_COL_POS,mobs[i].y+1,mobs[i].x+1);
+	    xt_par2(XT_SET_ROW_COL_POS,mobs->y+1,mobs->x+1);
 	    printf("M");
 	}
 	++mobs;

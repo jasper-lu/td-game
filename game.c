@@ -9,124 +9,140 @@
 
 int main() {
 
-  setbuf(stdout,NULL);
+    setbuf(stdout,NULL);
 
-  Mob * MOBS;
+    Point begin = init_Point(1,1);
+    Point finish = init_Point(18,8);
 
-  char **map;
-  map = malloc(sizeof(char*) * ROWS); 
+    Mob * MOBS;
 
-  int i,Score;
-  for (i = 0;  i < COLS + 2; ++i)
-    map[i] = malloc(sizeof(char) * (COLS + 2));
+    char **map;
+    map = malloc(sizeof(char*) * ROWS); 
 
-  MOBS = malloc(sizeof(Mob) * 100);
-  MOBS[0] = init_mob(1,1);
-  int mob_size = 1;
+    int i,Score;
+    for (i = 0;  i < COLS + 2; ++i)
+	map[i] = malloc(sizeof(char) * (COLS + 2));
 
-  xt_par0(XT_CLEAR_SCREEN);
-  xt_par2(XT_SET_ROW_COL_POS,1,1);
+    MOBS = malloc(sizeof(Mob) * 100);
+    int mob_size = 0;
 
-  init_map(map, ROWS, COLS);
-  Tower* arr;
-  i = 0;
-  arr = malloc(sizeof(Tower) * 100);
+    xt_par0(XT_CLEAR_SCREEN);
+    xt_par2(XT_SET_ROW_COL_POS,1,1);
 
-  int row = 1;
-  int col = 1;
-  xt_par2(XT_SET_ROW_COL_POS,row,col);
+    init_map(map, ROWS, COLS);
+    Tower* arr;
+    i = 0;
+    arr = malloc(sizeof(Tower) * 100);
 
-  char c;
+    int row = 1;
+    int col = 1;
+    xt_par2(XT_SET_ROW_COL_POS,row,col);
 
-  Point finish = init_Point(18,8);
+    char c;
 
-  printf("Before game loop \n");
 
-  int move_c = 0;
-  while(1)
+    printf("Before game loop \n");
+
+    int move_c = 0;
+    int wave_start = 0;
+    int next_wave_total = 1;
+    int spawn_count = 0;
+
+    while(1)
     {
-      if ((c = getkey()) == KEY_NOTHING){
+	if ((c = getkey()) == KEY_NOTHING){
 
-      }
-      else if(c == KEY_F9) 
-	{
-	  xt_par0(XT_CLEAR_SCREEN);
-	  xt_par2(XT_SET_ROW_COL_POS,row=1,col=1);
-	  break;
 	}
-      else if (c == KEY_UP && row > 1)
+	else if(c == KEY_F9) 
+	{
+	    xt_par0(XT_CLEAR_SCREEN);
+	    xt_par2(XT_SET_ROW_COL_POS,row=1,col=1);
+	    break;
+	}
+	else if ((c == KEY_UP || c == 'W' )&& row > 1)
 	{ 
-	  xt_par2(XT_SET_ROW_COL_POS,--row,col);
+	    xt_par2(XT_SET_ROW_COL_POS,--row,col);
 	}
-      else if (c == KEY_DOWN && row < 24)
+	else if ((c == KEY_DOWN || c == 'S') && row < 24)
 	{
-	  xt_par2(XT_SET_ROW_COL_POS,++row,col);
+	    xt_par2(XT_SET_ROW_COL_POS,++row,col);
 	}
-      else if (c == KEY_RIGHT && col < 80)
+	else if ((c == KEY_RIGHT || c == 'D') && col < 80)
 	{
-	  xt_par2(XT_SET_ROW_COL_POS,row,++col);
+	    xt_par2(XT_SET_ROW_COL_POS,row,++col);
 	}
-      else if (c == KEY_LEFT && col > 1)
+	else if ((c == KEY_LEFT || c == 'A') && col > 1)
 	{
-	  xt_par2(XT_SET_ROW_COL_POS,row,--col);
+	    xt_par2(XT_SET_ROW_COL_POS,row,--col);
 	}
-      else if ((c == 'T' || c == 't') )
+	else if ((c == 'T' || c == 't') )
 	{
-	  putchar('T');
-	  map[row - 1][col - 1] = 'T';
-	  Tower A = init_Tower(col-1,row-1);
-	  arr[i] = A;
-	  i++;
+	    putchar('T');
+	    map[row - 1][col - 1] = 'T';
+	    Tower A = init_Tower(col-1,row-1);
+	    arr[i] = A;
+	    i++;
 	}else if (c == 'r')
 	{
-	    printf("hi");
-	    if(move_c == 0)
-		move_c = 1;
-	    else
-		move_c = 0;
+	    if(wave_start == 0)
+	    {
+		spawn_count = next_wave_total;
+		++wave_start;
+	    }
 	}
 
-     if(i > 0)
-	tower_logic(arr, MOBS, mob_size);
-    
-      if(move_c == 4)
-      {
-	  move_mob(&MOBS[0], mob_size, &finish, map);
-	  move_c = 0;
-      }else{
-	  ++move_c;
-      }
 
-      xt_par0(XT_CLEAR_SCREEN);
-      xt_par2(XT_SET_ROW_COL_POS,1,1);
+	if(wave_start == 1)
+	{
+	    if(move_c == 3)
+	    {
+		move_mob(MOBS, mob_size, &finish, map);
+		if(spawn_count != 0)
+		    spawn_count = spawn(MOBS, &mob_size, begin, spawn_count);
+		move_c = 0;
 
-      draw_map(map, ROWS, COLS, arr, i, MOBS, mob_size);
+		if(round_won(MOBS, &mob_size))
+		{
+		    next_wave_total++;
+		    wave_start = 0;
+		}
+	    }else{
+		++move_c;
+	    }
+	    if(i > 0)
+		tower_logic(arr, MOBS, i,mob_size);
+	}
 
-      xt_par2(XT_SET_ROW_COL_POS, MOBS[0].y + 1,MOBS[0].x + 1);
+	xt_par0(XT_CLEAR_SCREEN);
+	xt_par2(XT_SET_ROW_COL_POS,1,1);
+
+	draw_map(map, ROWS, COLS, arr, i, MOBS, mob_size);
+
+	xt_par2(XT_SET_ROW_COL_POS, MOBS[0].y + 1,MOBS[0].x + 1);
 
 
-      xt_par2(XT_SET_ROW_COL_POS, row,col);
-      
-      xt_par2(XT_SET_ROW_COL_POS, 15, 0);
-      printf("Score:%d\n location of mob: %d,%d\n",Score,MOBS->x,MOBS->y);      
-      xt_par2(XT_SET_ROW_COL_POS, row,col);
+	xt_par2(XT_SET_ROW_COL_POS, row,col);
 
-      if(loser(MOBS, &finish))
-      {
-	  printf("YOU LOSE,\n LOSER\n TRY AGAIN NEXT TIME \n");
-//	  usleep(3000000);
-	  break;
-      }
+	xt_par2(XT_SET_ROW_COL_POS, 15, 0);
+	printf("Score:%d\n size of : %d\n",Score,i);      
+	xt_par2(XT_SET_ROW_COL_POS, row,col);
 
-      usleep(1000000 / FPS);
-//	usleep(1000000);
+	if(loser(MOBS, &finish))
+	{
+	    printf("YOU LOSE,\n LOSER\n TRY AGAIN NEXT TIME \n");
+	    //	  usleep(3000000);
+	    break;
+	}
+
+	usleep(1000000 / FPS);
+	//	usleep(1000000);
     }
-  getkey_terminate();
+    getkey_terminate();
 
-  xt_par0(XT_CLEAR_SCREEN);
-  xt_par2(XT_SET_ROW_COL_POS,1,1);
-    
+    xt_par0(XT_CLEAR_SCREEN);
+    xt_par2(XT_SET_ROW_COL_POS,1,1);
 
-  free(MOBS);
-  free(arr);
+
+    free(MOBS);
+    free(arr);
 }
