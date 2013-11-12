@@ -46,10 +46,13 @@ void move_mob(Mob *mob, int mob_size, struct Point* end, char **map)
     int i;
     for(i = 0; i < mob_size; ++i)
     {
-	Point b = astar(init_Point(mob->x,mob->y),*end,map);
-	//printf("astar after \n");
-	mob->x = b.x;
-	mob->y = b.y;
+	if(mob-> health > 0)
+	{
+	    Point b = astar(init_Point(mob->x,mob->y),*end,map);
+	    //printf("astar after \n");
+	    mob->x = b.x;
+	    mob->y = b.y;
+	}
 	++mob;
     }
 }
@@ -64,7 +67,7 @@ Tower init_Tower(int x, int y)
 void tower_logic(Tower *a, Mob *b, int tower_size, int mob_size)
 {
     int n, m;
-    for(m = 0; m != tower_size;++m)
+    for(m = 0; m < tower_size;++m)
     {
 	for(n = 0; n != mob_size; ++n)
 	{
