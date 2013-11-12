@@ -90,12 +90,14 @@ int main() {
 		i++;
 		Moneh -= 80;
 	    }
-	}else if (c == 'r')
+	}else if (c == 'r' || c == 'R')
 	{
 	    if(wave_start == 0)
 	    {
 		spawn_count = next_wave_total;
 		++wave_start;
+	    }else if(attack == 0){
+		wave_start = 0;
 	    }
 	}else if (c == ' '){
 	   if(attack == 0)
@@ -140,7 +142,7 @@ int main() {
 	xt_par2(XT_SET_ROW_COL_POS, row,col);
 
 	xt_par2(XT_SET_ROW_COL_POS, 15, 0);
-	printf("Score:%d\n Money: %d\n",Score,Moneh);      
+	printf("Score:%d\n Money: %d\nPress T to place a tower\nPress R to start the wave (can also pause in solver mode)\nor hit the SpaceBar to start solver mode\nWARNING: HONOR CODE -- PLEASE REFRAIN FROM MAKING UNSOLVABLE MAZES",Score,Moneh);      
 	xt_par2(XT_SET_ROW_COL_POS, row,col);
 
 	if(loser(MOBS, &finish))
