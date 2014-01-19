@@ -1,4 +1,5 @@
 #define PLAYER 0
+#define TOWER 1
   
 
 #define NUM_SPRITES 1
