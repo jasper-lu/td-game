@@ -13,6 +13,14 @@ static void init_sprites(void) {
             "-------"
         },4,7,XT_CH_BLUE
     };
+    sprite_table[TOWER] = (sprite_t) {
+        {
+            "_______",
+            "|\\___/|",
+            "| |A| |",
+            "|/___\\|"
+        },4,7,XT_CH_BROWN
+    };
 }
 
 sprite_t* get_sprite(int name) {
