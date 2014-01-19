@@ -16,7 +16,7 @@ typedef struct point_t point_t;
 struct sprite_t {
     char* graphic[MAX_SPRITE_HEIGHT];
     int height;
-    int width: 
+    int width;
     char* color;
 };
 typedef struct sprite_t sprite_t;

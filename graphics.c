@@ -1,4 +1,5 @@
 #include "graphics.h"
+#include "xterm_control.h"
 
 static sprite_t sprite_table[NUM_SPRITES] = {{{0}}};
 static int sprite_init = 0;
@@ -11,7 +12,7 @@ static void init_sprites(void) {
             "|  __ |",
             "-------"
         },4,7,XT_CH_BLUE
-    }
+    };
 }
 
 sprite_t* get_sprite(int name) {
