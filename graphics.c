@@ -25,9 +25,9 @@ void draw(point_t* point, sprite_t* sprite) {
     int t_x = point->x;
     int t_y = point->y;
     int r, c;
-    for(r = 0; c!= sprite->width; ++c){
-        for(c = 0; r!= sprite->height; ++r){
-            SETPOS(t_x + c, t_y + r);
+    for(r = 0; r!= sprite->height; r++){
+        SETPOS(t_x, t_y + r);
+        for(c = 0; c!= sprite->width; ++c){
             putchar(sprite->graphic[r][c]);
         }
     }

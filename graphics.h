@@ -5,7 +5,7 @@
 #define MAX_SPRITE_HEIGHT 4
 #define SPRITE_WIDTH 7
 
-#define SETPOS(x, y) xt_par2(XT_SET_ROW_COL_POS, (x), (y))
+#define SETPOS(x, y) xt_par2(XT_SET_ROW_COL_POS, (y), (x))
 
 struct point_t {
     int x;

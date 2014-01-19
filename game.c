@@ -10,31 +10,32 @@ int main() {
 
     setbuf(stdout,NULL);
 
-    int row = 1;
-    int col = 1;
     char c;
+    point_t point;
+    point.x = 1;
+    point.y = 1;
 
     while(1)
     {
 	if ((c = getkey()) == KEY_NOTHING){
 
 	}
-	else if ((c == KEY_UP || c == 'W' )&& row > 1)
+	else if ((c == KEY_UP || c == 'W' )&& point.y > 1)
 	{ 
-	    xt_par2(XT_SET_ROW_COL_POS,row=row-4,col);
+	    xt_par2(XT_SET_ROW_COL_POS,point.y-=4,point.x);
 	}
-	else if ((c == KEY_DOWN || c == 'S') && row < 36)
+	else if ((c == KEY_DOWN || c == 'S') && point.y < 36)
 	{
-	    xt_par2(XT_SET_ROW_COL_POS,row=row+4,col);
+	    xt_par2(XT_SET_ROW_COL_POS,point.y+=4,point.x);
 	}
         //which means this is a 20*10 grid 
-	else if ((c == KEY_RIGHT || c == 'D') && col < 133)
+	else if ((c == KEY_RIGHT || c == 'D') && point.x < 133)
 	{
-	    xt_par2(XT_SET_ROW_COL_POS,row,col=col+7);
+	    xt_par2(XT_SET_ROW_COL_POS,point.y,point.x+=7);
 	}
-	else if ((c == KEY_LEFT || c == 'A') && col > 1)
+	else if ((c == KEY_LEFT || c == 'A') && point.x > 1)
 	{
-	    xt_par2(XT_SET_ROW_COL_POS,row,col=col-7);
+	    xt_par2(XT_SET_ROW_COL_POS,point.y,point.x-=7);
 	}
 	else if ((c == 'T' || c == 't') )
 	{
@@ -45,7 +46,7 @@ int main() {
 
 
 	xt_par0(XT_CLEAR_SCREEN);
-
+        draw(&point, get_sprite(PLAYER));
         xt_par2(XT_SET_ROW_COL_POS,999,999);
 
 	usleep(1000000 / FPS);
