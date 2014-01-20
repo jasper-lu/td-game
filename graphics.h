@@ -8,6 +8,14 @@
 #define MAX_SPRITE_HEIGHT 4
 #define SPRITE_WIDTH 7
 
+#define TILE_HEIGHT 4
+#define TILE_WIDTH 7
+
+#define MAP_HEIGHT 9
+#define MAP_WIDTH 20
+
+#define BORDER_WIDTH 1
+
 #define SETPOS(x, y) xt_par2(XT_SET_ROW_COL_POS, (y), (x))
 
 struct point_t {
@@ -24,6 +32,15 @@ struct sprite_t {
 };
 typedef struct sprite_t sprite_t;
 
+struct ui_template {
+    int col;
+    int row;
+    char *color;
+    char *string;
+};
+typedef struct ui_template ui_template;
+
 //borrowed & modded from ben kurtovic
 sprite_t* get_sprite(int);
 void draw(point_t*, sprite_t*);
+void draw_ui();

@@ -12,7 +12,7 @@ static tower_t* spawn_tower(game_t* game, int type);
 static enemy_t* spawn_enemy(game_t* game, int health, int speed);
 
 static void spawn_player(game_t* game) {
-    game->player = (player_t){(point_t){1,1}};
+    game->player = (player_t){(point_t){0,0}};
 }
 
 static tower_t* spawn_tower(game_t* game, int type) {
@@ -41,22 +41,22 @@ int main() {
 	if ((c = getkey()) == KEY_NOTHING){
 
 	}
-	else if ((c == KEY_UP || c == 'W' )&& game->player.point.y > 1)
+	else if ((c == KEY_UP || c == 'W' )&& game->player.point.y > 0)
 	{ 
-	    xt_par2(XT_SET_ROW_COL_POS,game->player.point.y-=4,game->player.point.x);
+	    xt_par2(XT_SET_ROW_COL_POS,game->player.point.y--,game->player.point.x);
 	}
-	else if ((c == KEY_DOWN || c == 'S') && game->player.point.y < 36)
+	else if ((c == KEY_DOWN || c == 'S') && game->player.point.y < MAP_HEIGHT - 1)
 	{
-	    xt_par2(XT_SET_ROW_COL_POS,game->player.point.y+=4,game->player.point.x);
+	    xt_par2(XT_SET_ROW_COL_POS,game->player.point.y++,game->player.point.x);
 	}
         //which means this is a 20*10 grid 
-	else if ((c == KEY_RIGHT || c == 'D') && game->player.point.x < 133)
+	else if ((c == KEY_RIGHT || c == 'D') && game->player.point.x < MAP_WIDTH - 1)
 	{
-	    xt_par2(XT_SET_ROW_COL_POS,game->player.point.y,game->player.point.x+=7);
+	    xt_par2(XT_SET_ROW_COL_POS,game->player.point.y,game->player.point.x++);
 	}
-	else if ((c == KEY_LEFT || c == 'A') && game->player.point.x > 1)
+	else if ((c == KEY_LEFT || c == 'A') && game->player.point.x > 0)
 	{
-	    xt_par2(XT_SET_ROW_COL_POS,game->player.point.y,game->player.point.x-=7);
+	    xt_par2(XT_SET_ROW_COL_POS,game->player.point.y,game->player.point.x--);
 	}
 	else if (c == '1')
 	{
@@ -66,8 +66,8 @@ int main() {
 	}else if (c == ' '){
 	} 
 
-
 	xt_par0(XT_CLEAR_SCREEN);
+        draw_ui();
         draw(&game->player.point, get_sprite(PLAYER));
 
             draw(&game->tower_head->point, get_sprite(TOWER));
