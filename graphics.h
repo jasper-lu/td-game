@@ -4,7 +4,7 @@
 #define MAX_ROWS 10
 #define MAX_HEIGHT 10
 
-#define NUM_SPRITES 1
+#define NUM_SPRITES 2
 #define MAX_SPRITE_HEIGHT 4
 #define SPRITE_WIDTH 7
 

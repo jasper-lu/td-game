@@ -7,7 +7,7 @@ static int sprite_init = 0;
 static void init_sprites(void) {
     sprite_table[PLAYER] = (sprite_t) {
         {
-            "-------",
+            "_______",
             "| 0  0|",
             "|  __ |",
             "-------"
