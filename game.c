@@ -6,10 +6,27 @@
 #include "graphics.h"
 #define FPS 30
 
+//prototypes
+static void spawn_player(game_t* game);
+static tower_t* spawn_tower(game_t* game, int x, int y, int type);
+static enemy_t* spawn_enemy(game_t* game, int health, int speed);
+
+static void spawn_player(game_t* game) {
+    game->player = (point){2,2};
+}
+
+static tower_t* spawn_tower(game_t* game, int type) {
+    tower_t* temp_tower = malloc(sizeof(tower_t));
+    *temp_tower = (tower_t) {(point_t) {game->player.x,game->player.y}, 10, 30, 0, TOWER, game->tower_head};
+    game->tower_head = temp_tower;
+    return temp_tower;
+}
+
 int main() {
 
     setbuf(stdout,NULL);
 
+    game_t* game = malloc(sizeof(game_t));
     char c;
     point_t point;
     point.x = 1;

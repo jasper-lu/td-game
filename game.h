@@ -1,24 +1,33 @@
 #include graphics.h
 
-//prototypes
-static_void spawn_player(*game_t);
-static_void spawn_tower(*game_t, int x, int y, int type);
-static_void spawn_enemy(*game_t, int health, int speed);
 
 struct player_t {
     point_t point;
 }
+typedef struct player_t player_t;
 
 struct tower_t {
     point_t point;
     int power;
-    int reload;
+    int cooldown;
+    int cooldown_timer;
     //tower type
     int type;
+    struct tower_t* next;
 }
+typedef struct tower_t tower_t;
 
 struct enemy_t {
     point_t point;
     int speed;
     int health;
+    struct enemy_t* next;
+}
+typedef struct enemy_t enemy_t;
+
+struct game {
+    int money;
+    player_t* player;
+    enemy_t* enemy_head;
+    tower_t* tower_head;
 }

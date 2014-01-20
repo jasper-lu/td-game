@@ -1,6 +1,8 @@
 #define PLAYER 0
 #define TOWER 1
-  
+
+#define MAX_ROWS 10
+#define MAX_HEIGHT 10
 
 #define NUM_SPRITES 1
 #define MAX_SPRITE_HEIGHT 4
