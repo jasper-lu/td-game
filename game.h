@@ -1,9 +1,8 @@
-#include graphics.h
-
+#include "graphics.h"
 
 struct player_t {
     point_t point;
-}
+};
 typedef struct player_t player_t;
 
 struct tower_t {
@@ -14,7 +13,7 @@ struct tower_t {
     //tower type
     int type;
     struct tower_t* next;
-}
+};
 typedef struct tower_t tower_t;
 
 struct enemy_t {
@@ -22,12 +21,13 @@ struct enemy_t {
     int speed;
     int health;
     struct enemy_t* next;
-}
+};
 typedef struct enemy_t enemy_t;
 
-struct game {
+struct game_t {
     int money;
-    player_t* player;
+    player_t player;
     enemy_t* enemy_head;
     tower_t* tower_head;
-}
+};
+typedef struct game_t game_t;

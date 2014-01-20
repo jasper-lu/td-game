@@ -19,7 +19,7 @@ static void init_sprites(void) {
             "|\\___/|",
             "| |A| |",
             "|/___\\|"
-        },4,7,XT_CH_BROWN
+        },4,7,XT_CH_WHITE
     };
 }
 
