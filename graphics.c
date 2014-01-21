@@ -4,19 +4,30 @@
 static sprite_t sprite_table[NUM_SPRITES] = {{{0}}};
 static int sprite_init = 0;
 static ui_template UI[] = {
-    {0,0,XT_CH_GREEN,"________________________________________________________________________________________________________"},
+    {0,0,XT_CH_GREEN,"____________________________________________________________________________________________________________________________________________"},
     {0,1,XT_CH_GREEN," _______1|       2 |"},
     {0,2,XT_CH_GREEN," |\\___/| |"},
     {0,3,XT_CH_GREEN," | |A| | |"},
     {0,4,XT_CH_GREEN," |/___\\| |"},
-    {0,5,XT_CH_GREEN,"100G_____|_________|____________________________________________________________________________________"}
+    {0,5,XT_CH_GREEN,"100G_____|_________|________________________________________________________________________________________________________________________"}
 };
 static int ui_size = 6;
 
 void draw_ui() {
     int i;
+    //a lot of the stuff in the following code secition may not make sense. They were used to positino the stuff, but there are a lot of 1 borders, etc. idk... it's still readable [the code] though, at least
+    for (i = 2; i != 44; ++i) {
+        SETPOS(1,i);
+        putchar('|');
+        SETPOS(TILE_WIDTH * MAP_WIDTH + BORDER_WIDTH * 2,i);
+        putchar('|');
+    }
+    for(i = 2; i != MAP_WIDTH * TILE_WIDTH + BORDER_WIDTH * 2; ++i) {
+        SETPOS(i,1);
+        putchar('_');
+    }
     for(i = 0; i != ui_size; ++i) {
-        SETPOS(UI[i].col + BORDER_WIDTH + 1, UI[i].row +1 +  MAP_HEIGHT * TILE_HEIGHT);
+        SETPOS(UI[i].col + BORDER_WIDTH + 1, UI[i].row + BORDER_WIDTH * 2 +  MAP_HEIGHT * TILE_HEIGHT);
         printf("%s", UI[i].string);
     }
 }
@@ -52,9 +63,10 @@ void draw(point_t* point, sprite_t* sprite) {
     int t_y = point->y;
     int r, c;
     for(r = 0; r!= sprite->height; r++){
-        SETPOS(t_x*TILE_WIDTH + 1 + BORDER_WIDTH, t_y * TILE_HEIGHT + r + 1);
+        SETPOS(t_x*TILE_WIDTH + 1 + BORDER_WIDTH, t_y * TILE_HEIGHT + r + 1 + BORDER_WIDTH);
         for(c = 0; c!= sprite->width; ++c){
             putchar(sprite->graphic[r][c]);
         }
     }
 }
+

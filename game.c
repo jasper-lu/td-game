@@ -10,6 +10,7 @@
 static void spawn_player(game_t* game);
 static tower_t* spawn_tower(game_t* game, int type);
 static enemy_t* spawn_enemy(game_t* game, int health, int speed);
+static void draw_towers(game_t* game);
 
 static void spawn_player(game_t* game) {
     game->player = (player_t){(point_t){0,0}};
@@ -26,6 +27,14 @@ static tower_t* spawn_tower(game_t* game, int type) {
     return temp_tower;
 }
 
+static void draw_towers(game_t* game) {
+    tower_t* temp = game->tower_head;
+    while(temp) {
+        draw(&temp->point, get_sprite(temp->type));
+        temp = temp->next;
+    }
+}
+
 int main() {
 
     setbuf(stdout,NULL);
@@ -34,7 +43,7 @@ int main() {
     char c;
     point_t point;
     spawn_player(game);
-    spawn_tower(game, TOWER);
+//    spawn_tower(game, TOWER);
 
     while(1)
     {
@@ -65,12 +74,11 @@ int main() {
 	{
 	}else if (c == ' '){
 	} 
-
+//look into the clear screen function, and see if it can be adapted to only changet the playing aread
 	xt_par0(XT_CLEAR_SCREEN);
         draw_ui();
+        draw_towers(game);
         draw(&game->player.point, get_sprite(PLAYER));
-
-            draw(&game->tower_head->point, get_sprite(TOWER));
 
         xt_par2(XT_SET_ROW_COL_POS,999,999);
 
