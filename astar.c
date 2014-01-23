@@ -180,33 +180,23 @@ point_t astar(point_t begin, point_t end, char** map)
 	closed[n] = current;
 	++n;
 	point_t* neighs = malloc(sizeof(point_t) * 4);
-//	printf("curren point -- %d\n", current->p.x);
 	int neigh_size = add_neighs(current->p,neighs,map);
 	int c;
-   // printf("%d,%d\n",getMin(open)->p.x,getMin(open)->p.y);
 
 	int cost = current->f + 1;
 
 	for(c = 0; c != neigh_size; ++c)
 	{
-	 //   printf("neigh size: %d, c: %d\n",neigh_size,c);
 	    if(!(isIn(open->heap, open->size,neighs[c])) && !(isIn(closed,n-1,neighs[c])))
-//	    if(!(isIn(open->heap, open->size, neighs[c])))
 	    {
-	//	printf("c= %d when seg fault \n", c);
-		//printf("x: %d, y:%d\n", neighs[c].x,neighs[c].y);
 
 		Node* neigh = init_NodeA(neighs[c],cost,calcH(neighs[c],end),current);
 
-	//	printf("before insert?\n");
 		insert(neigh,open);
-	//	printf("dead end\n");
 	    }
-	 //   printf("next one\n");
 	}
 	free(neighs);
     }
-	//printf("out\n");
 
     Node * final = pop(open);
     while(!(p_equals(final->parent->p, begin)))

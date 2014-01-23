@@ -11,20 +11,54 @@ static void spawn_player(game_t* game);
 static tower_t* spawn_tower(game_t* game, int type);
 static enemy_t* spawn_enemy(game_t* game, int health, int speed);
 static void draw_towers(game_t* game);
+static void init_game(game_t* game);
+
+static void init_game(game_t* game) {
+    game = malloc(sizeof(game_t));
+    game->money = 0;
+}
+
+static void init_map(game_t* game, int width, int height) {
+    printf("count\n");
+    char ** map ;
+     map = calloc(height+2, sizeof(char*));
+    int i;
+    for(i = 0; i!= height + 2; ++i) {
+        map[i] = calloc(width+2, sizeof(char));
+        //put char here to cast as a boundary
+        map[i][0] = 'x';
+        map[i][width + 1] = 'x';
+    }
+    printf("count\n");
+    for(i = 1; i!= width; ++i) {
+        map[0][i] = 'x';
+        map[height + 1][i] = 'x';
+    }
+    game->map = map;
+    printf("hi");
+    printf("%c", map[0][0]);
+    printf("hi");
+    //need to check if the map is correct
+
+}
 
 static void spawn_player(game_t* game) {
     game->player = (player_t){(point_t){0,0}};
 }
 
 static tower_t* spawn_tower(game_t* game, int type) {
-    printf("1");
     tower_t* temp_tower = malloc(sizeof(tower_t));
-    printf("2");
     *temp_tower = (tower_t) {(point_t) {game->player.point.x,game->player.point.y}, 10, 30, 0, TOWER, game->tower_head};
-    printf("3");
     game->tower_head = temp_tower;
-    printf("4");
     return temp_tower;
+}
+
+static enemy_t* spawn_enemy(game_t* game, int health, int speed) {
+    enemy_t* temp_enemy = malloc(sizeof(enemy_t));
+    //magic numers for starting point and ending point. will change eventually??
+    *temp_enemy = (enemy_t) {(point_t) {0,4}, (point_t){19,5},speed,health,game->enemy_head};
+    game->enemy_head = temp_enemy;
+    return temp_enemy;
 }
 
 static void draw_towers(game_t* game) {
@@ -38,12 +72,13 @@ static void draw_towers(game_t* game) {
 int main() {
 
     setbuf(stdout,NULL);
-
-    game_t* game = malloc(sizeof(game_t));
+    game_t* game = malloc(sizeof(game_t)); 
+    init_map(game, MAP_WIDTH, MAP_HEIGHT);
     char c;
     point_t point;
     spawn_player(game);
 //    spawn_tower(game, TOWER);
+    spawn_enemy(game,100,3);
 
     while(1)
     {
@@ -76,10 +111,31 @@ int main() {
 	} 
         }
 //look into the clear screen function, and see if it can be adapted to only changet the playing aread
+        
+
+        /*
+        char** map;
+        map = malloc(sizeof(char*) * 5); 
+        int i;
+        for (i = 0;  i < 5; ++i)
+	    map[i] = malloc(sizeof(char)*5);
+
+        point_t new = astar((point_t){1,1}, (point_t){3,3}, map);
+        printf("%d, %d", new.x, new.y);
+        */
+        printf("%c", game->map[0][0]);
+
+        printf("before astar");
+
+        astar(game->enemy_head->point, game->enemy_head->dest, game->map);
+    
+        printf("after");
+
         xt_par0(XT_CLEAR_SCREEN);
         draw_ui();
         draw_towers(game);
         draw(&game->player.point, get_sprite(PLAYER));
+        draw(&game->enemy_head->point, get_sprite(MONSTER));
 
         xt_par2(XT_SET_ROW_COL_POS,999,999);
 
