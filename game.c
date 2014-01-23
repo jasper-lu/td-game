@@ -1,8 +1,8 @@
-#include <stdio.h>
 #include <unistd.h>
-#include <stdlib.h>
 #include "keyboard.h"
+#include <stdlib.h>
 #include "xterm_control.h" 
+#include <stdio.h>
 #include "game.h"
 #define FPS 30
 

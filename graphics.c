@@ -1,5 +1,7 @@
 #include "graphics.h"
 #include "xterm_control.h"
+#include <string.h>
+#include <stdio.h>
 
 static sprite_t sprite_table[NUM_SPRITES] = {{{0}}};
 static int sprite_init = 0;
@@ -35,11 +37,11 @@ void draw_ui() {
 static void init_sprites(void) {
     sprite_table[PLAYER] = (sprite_t) {
         {
-            "_______",
-            "| 0  0|",
-            "|  __ |",
-            "-------"
-        },4,7,XT_CH_BLUE
+            "╔═---═╗",
+            "¦ ┌ ┐ ¦",
+            "¦ └ ┘ ¦",
+            "╚═---═╝"
+        },4,15,XT_CH_BLUE
     };
     sprite_table[TOWER] = (sprite_t) {
         {
@@ -48,6 +50,14 @@ static void init_sprites(void) {
             "| |A| |",
             "|/___\\|"
         },4,7,XT_CH_WHITE
+    };
+    sprite_table[MONSTER] = (sprite_t) {
+        {
+            " ═╗_╔═ ", 
+            "╚═|U|═╝",
+            "╔═|O|═╗",
+            " ═╝ ╚═ "
+        }, 4, 15, XT_CH_RED
     };
 }
 
@@ -68,5 +78,6 @@ void draw(point_t* point, sprite_t* sprite) {
             putchar(sprite->graphic[r][c]);
         }
     }
+    xt_par0(XT_CH_NORMAL); 
 }
 

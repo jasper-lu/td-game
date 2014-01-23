@@ -1,5 +1,6 @@
 #define PLAYER 0
 #define TOWER 1
+#define MONSTER 3
 
 #define MAX_ROWS 10
 #define MAX_HEIGHT 10
