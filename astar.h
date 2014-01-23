@@ -1,17 +1,19 @@
+#include "graphics.h"
+
 struct Node
 {
-    point_t p;
+    struct point_t p;
     int f, h;
-    Node * parent;
+    struct Node * parent;
 };
 typedef struct Node Node;
 
-struct Node_heap;
+struct Node_heap
 {
-    node_t** heap;
+    Node** heap;
     int size;
 };
-typdef struct Node_heap Node_heap;
+typedef struct Node_heap Node_heap;
 
 Node* init_Node();
 Node* init_NodeP(point_t p);

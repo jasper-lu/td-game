@@ -115,30 +115,30 @@ int p_equals(point_t lhs, point_t rhs)
 	return 0;
 }
 //fuck some more magic code....
-int add_neighs(point_t home, Point* neigh, char **map)
+int add_neighs(point_t home, point_t* neigh, char **map)
 {
 //    printf("adding neigh\n");
     int n = 0;
 //	printf("and one %d, %d\n", home.x,home.y);
     if(map[home.y+1][home.x] == ' ' || map[home.y+1][home.x] == 'O')
     {
-	neigh[n++] = init_Point(home.x,home.y+1);
+	neigh[n++] = (point_t){home.x,home.y+1};
 //	printf("and two\n");
     }
     if(map[home.y][home.x+1] == ' ' || map[home.y][home.x+1] == 'O')
     {
 //	printf("and 3\n");
-	neigh[n++] = init_Point(home.x+1,home.y);
+	neigh[n++] = (point_t){home.x+1,home.y};
     }
     if(map[home.y-1][home.x] == ' ' || map[home.y-1][home.x] == 'O' )
     {
 //	printf("and 4\n");
-	neigh[n++] = init_Point(home.x,home.y-1);
+	neigh[n++] = (point_t){home.x,home.y-1};
     }
     if(map[home.y][home.x-1] == ' ' || map[home.y][home.x-1] == 'O')
     {
 //	printf("and 5\n");
-	neigh[n++] = init_Point(home.x-1,home.y);
+	neigh[n++] = (point_t){home.x-1,home.y};
     }
 
 //    printf("this round: %d\n", n);
@@ -179,7 +179,7 @@ point_t astar(point_t begin, point_t end, char** map)
 	Node* current = pop(open);
 	closed[n] = current;
 	++n;
-	Point* neighs = malloc(sizeof(Point) * 4);
+	point_t* neighs = malloc(sizeof(point_t) * 4);
 //	printf("curren point -- %d\n", current->p.x);
 	int neigh_size = add_neighs(current->p,neighs,map);
 	int c;
