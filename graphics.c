@@ -61,6 +61,12 @@ static void init_sprites(void) {
             "|\\___/|",
             "| |A| |",
             "|/___\\|"
+                /*
+            "┌\\───/┐",
+            "| |Ã| |",
+            "|/ ¯ \\|",
+            "└─────┘"
+            */
         },4,7,XT_CH_WHITE
     };
     sprite_table[MONSTER] = (sprite_t) {
