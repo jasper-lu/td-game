@@ -4,7 +4,7 @@
 #include "xterm_control.h" 
 #include <stdio.h>
 #include "game.h"
-#define FPS 30
+#define FPS 5
 
 //prototypes
 static void spawn_player(game_t* game);
@@ -19,25 +19,28 @@ static void init_game(game_t* game) {
 }
 
 static void init_map(game_t* game, int width, int height) {
-    printf("count\n");
+//    printf("count\n");
     char ** map ;
      map = calloc(height+2, sizeof(char*));
-    int i;
+    int i, j ;
     for(i = 0; i!= height + 2; ++i) {
         map[i] = calloc(width+2, sizeof(char));
         //put char here to cast as a boundary
-        map[i][0] = 'x';
-        map[i][width + 1] = 'x';
     }
-    printf("count\n");
-    for(i = 1; i!= width; ++i) {
-        map[0][i] = 'x';
-        map[height + 1][i] = 'x';
+    for(i=0;i!= height + 2; ++i) {
+        for(j=0;j!=width + 2; ++j) {
+            if(i == 0 || j == 0 || i == height + 1 || i == width + 1)
+                map[i][j] = 'x';
+            else
+                map[i][j] = ' ';
+        }
     }
+
+
     game->map = map;
-    printf("hi");
-    printf("%c", map[0][0]);
-    printf("hi");
+ //   printf("hi");
+  //  printf("%c", map[0][0]);
+   // printf("hi");
     //need to check if the map is correct
 
 }
@@ -123,19 +126,21 @@ int main() {
         point_t new = astar((point_t){1,1}, (point_t){3,3}, map);
         printf("%d, %d", new.x, new.y);
         */
-        printf("%c", game->map[0][0]);
+        //printf("%c", game->map[0][0]);
 
-        printf("before astar");
+ //       printf("before astar");
 
-        astar(game->enemy_head->point, game->enemy_head->dest, game->map);
-    
-        printf("after");
+        point_t move=  astar(game->enemy_head->point, game->enemy_head->dest, game->map);
+        game->enemy_head->point.x = move.x;
+        game->enemy_head->point.y = move.y;
+ //       printf("after");
 
         xt_par0(XT_CLEAR_SCREEN);
         draw_ui();
         draw_towers(game);
         draw(&game->player.point, get_sprite(PLAYER));
         draw(&game->enemy_head->point, get_sprite(MONSTER));
+        printf("enemy dest: %d, %d", game->enemy_head->dest.x, game->enemy_head->dest.y);
 
         xt_par2(XT_SET_ROW_COL_POS,999,999);
 

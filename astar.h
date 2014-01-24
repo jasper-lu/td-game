@@ -23,3 +23,5 @@ Node_heap* init_Node_heap();
 void insert(Node *x, Node_heap* heap);
 Node* pop(Node_heap *heap);
 Node* getMin(Node_heap *heap);
+
+point_t astar(point_t begin, point_t end, char** map);

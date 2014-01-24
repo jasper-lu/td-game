@@ -141,7 +141,7 @@ int add_neighs(point_t home, point_t* neigh, char **map)
 	neigh[n++] = (point_t){home.x-1,home.y};
     }
 
-//    printf("this round: %d\n", n);
+//    printf("addneights this round: %d\n", n);
     return n;
 }
 
@@ -169,14 +169,22 @@ int isIn(Node** in, int size, point_t p)
 
 point_t astar(point_t begin, point_t end, char** map)
 {
+    //some horribly written code to fix the transition mistakes, namely, map is formatted with 1,1 being hte first open spot vs the entity point class having 0,0 being the first
+    begin.x++;
+    begin.y++;
+    end.x++;
+    end.y++;
+    //endfix
     Node *start = init_NodeA(begin, 0, calcH(begin,end),NULL); 
     Node_heap *open = init_Node_heap();
     insert(start, open);
-    Node** closed = malloc(sizeof(Node) * 1600);
+    Node** closed = malloc(sizeof(Node) * 200);
     int n =0;
     while(!(p_equals(getMin(open)->p,end)))
     {
+        //printf("\n\nworks up to this place \n");
 	Node* current = pop(open);
+        //printf("\n\nworks beforeh ere too \n");
 	closed[n] = current;
 	++n;
 	point_t* neighs = malloc(sizeof(point_t) * 4);
@@ -191,13 +199,13 @@ point_t astar(point_t begin, point_t end, char** map)
 	    {
 
 		Node* neigh = init_NodeA(neighs[c],cost,calcH(neighs[c],end),current);
-
+        //        printf("one two \n");
 		insert(neigh,open);
 	    }
 	}
 	free(neighs);
+//        printf("out?");
     }
-
     Node * final = pop(open);
     while(!(p_equals(final->parent->p, begin)))
     {
@@ -215,6 +223,9 @@ point_t astar(point_t begin, point_t end, char** map)
     
     free(closed);
     close_heap(open);
+    //start fix for the implementation of points, see earlier comment. I'm too lazy to refactor the code
+    ret.x--;
+    ret.y--;
     return ret;
 }
 
