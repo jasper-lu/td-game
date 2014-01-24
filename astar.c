@@ -1,4 +1,5 @@
 #include "astar.h"
+#include <math.h>
 #include <stdlib.h>
 
 //Creates a new node altogether
@@ -120,22 +121,22 @@ int add_neighs(point_t home, point_t* neigh, char **map)
 //    printf("adding neigh\n");
     int n = 0;
 //	printf("and one %d, %d\n", home.x,home.y);
-    if(map[home.y+1][home.x] == ' ' || map[home.y+1][home.x] == 'O')
+    if(map[home.y+1][home.x] != 'x' )
     {
 	neigh[n++] = (point_t){home.x,home.y+1};
 //	printf("and two\n");
     }
-    if(map[home.y][home.x+1] == ' ' || map[home.y][home.x+1] == 'O')
+    if(map[home.y][home.x+1] != 'x' )
     {
 //	printf("and 3\n");
 	neigh[n++] = (point_t){home.x+1,home.y};
     }
-    if(map[home.y-1][home.x] == ' ' || map[home.y-1][home.x] == 'O' )
+    if(map[home.y-1][home.x] != 'x' )
     {
 //	printf("and 4\n");
 	neigh[n++] = (point_t){home.x,home.y-1};
     }
-    if(map[home.y][home.x-1] == ' ' || map[home.y][home.x-1] == 'O')
+    if(map[home.y][home.x-1] != 'x' )
     {
 //	printf("and 5\n");
 	neigh[n++] = (point_t){home.x-1,home.y};
@@ -147,7 +148,7 @@ int add_neighs(point_t home, point_t* neigh, char **map)
 
 int calcH(point_t curr, point_t end)
 {
-    return (end.x - curr.x) + (end.y - curr.y);
+    return abs(end.x - curr.x) + abs(end.y - curr.y);
 }
 
 int isIn(Node** in, int size, point_t p)
@@ -197,7 +198,7 @@ point_t astar(point_t begin, point_t end, char** map)
 	{
 	    if(!(isIn(open->heap, open->size,neighs[c])) && !(isIn(closed,n-1,neighs[c])))
 	    {
-
+        //        printf("hueristic for %d -- %d,%d: %d", c, neighs[c].x, neighs[c].y, calcH(neighs[c], end));
 		Node* neigh = init_NodeA(neighs[c],cost,calcH(neighs[c],end),current);
         //        printf("one two \n");
 		insert(neigh,open);

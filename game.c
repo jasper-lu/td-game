@@ -29,7 +29,7 @@ static void init_map(game_t* game, int width, int height) {
     }
     for(i=0;i!= height + 2; ++i) {
         for(j=0;j!=width + 2; ++j) {
-            if(i == 0 || j == 0 || i == height + 1 || i == width + 1)
+            if(i == 0 || j == 0 || i == height + 1 || j == width + 1 )
                 map[i][j] = 'x';
             else
                 map[i][j] = ' ';
@@ -42,7 +42,6 @@ static void init_map(game_t* game, int width, int height) {
   //  printf("%c", map[0][0]);
    // printf("hi");
     //need to check if the map is correct
-
 }
 
 static void spawn_player(game_t* game) {
@@ -59,7 +58,7 @@ static tower_t* spawn_tower(game_t* game, int type) {
 static enemy_t* spawn_enemy(game_t* game, int health, int speed) {
     enemy_t* temp_enemy = malloc(sizeof(enemy_t));
     //magic numers for starting point and ending point. will change eventually??
-    *temp_enemy = (enemy_t) {(point_t) {0,4}, (point_t){19,5},speed,health,game->enemy_head};
+    *temp_enemy = (enemy_t) {(point_t) {0,4}, (point_t){19,4},speed,health,game->enemy_head};
     game->enemy_head = temp_enemy;
     return temp_enemy;
 }
@@ -140,7 +139,16 @@ int main() {
         draw_towers(game);
         draw(&game->player.point, get_sprite(PLAYER));
         draw(&game->enemy_head->point, get_sprite(MONSTER));
-        printf("enemy dest: %d, %d", game->enemy_head->dest.x, game->enemy_head->dest.y);
+        /*
+        int i,j;
+        for(i=0;i!= 11; ++i) {
+         for(j=0;j!= 22; ++j) {
+            putchar(game->map[i][j]);
+        }
+         printf("\n");
+    }
+    */
+
 
         xt_par2(XT_SET_ROW_COL_POS,999,999);
 
