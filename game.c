@@ -4,18 +4,28 @@
 #include "xterm_control.h" 
 #include <stdio.h>
 #include "game.h"
-#define FPS 5
+#define FPS 20
 
 //prototypes
 static void spawn_player(game_t* game);
 static tower_t* spawn_tower(game_t* game, int type);
 static enemy_t* spawn_enemy(game_t* game, int health, int speed);
 static void draw_towers(game_t* game);
-static void init_game(game_t* game);
+static game_t* init_game();
 
-static void init_game(game_t* game) {
-    game = malloc(sizeof(game_t));
+static void init_em(enemy_manager_t** p_em, int timer) {
+    *p_em = malloc(sizeof(enemy_manager_t));
+    enemy_manager_t* em = *p_em;
+    em->level = 1;
+    em->wave_timer = timer;
+    em->wave_load = 0;
+    em->enemy_head = NULL;
+}
+
+static game_t* init_game() {
+    game_t* game = malloc(sizeof(game_t));
     game->money = 0;
+    return game;
 }
 
 static void init_map(game_t* game, int width, int height) {
@@ -40,7 +50,7 @@ static void init_map(game_t* game, int width, int height) {
     game->map = map;
  //   printf("hi");
   //  printf("%c", map[0][0]);
-   // printf("hi");
+   // printf("hi") ;
     //need to check if the map is correct
 }
 
@@ -56,10 +66,14 @@ static tower_t* spawn_tower(game_t* game, int type) {
 }
 
 static enemy_t* spawn_enemy(game_t* game, int health, int speed) {
+    printf("yeo");
     enemy_t* temp_enemy = malloc(sizeof(enemy_t));
+    printf("yeo");
     //magic numers for starting point and ending point. will change eventually??
-    *temp_enemy = (enemy_t) {(point_t) {0,4}, (point_t){19,4},speed,health,game->enemy_head};
-    game->enemy_head = temp_enemy;
+    *temp_enemy = (enemy_t) {(point_t) {0,4}, (point_t){19,4},speed,0,health,game->e_manager->enemy_head};
+    printf("yeo");
+    game->e_manager->enemy_head = temp_enemy;
+    printf("yeo");
     return temp_enemy;
 }
 
@@ -73,14 +87,20 @@ static void draw_towers(game_t* game) {
 
 int main() {
 
-    setbuf(stdout,NULL);
-    game_t* game = malloc(sizeof(game_t)); 
-    init_map(game, MAP_WIDTH, MAP_HEIGHT);
     char c;
+    setbuf(stdout,NULL);
+    //game_t* game = malloc(sizeof(game_t)); 
+    game_t* game = init_game();
+    init_em(&game->e_manager, 5);
+    printf("level: %d",game->e_manager->level);
+    init_map(game, MAP_WIDTH, MAP_HEIGHT);
     point_t point;
     spawn_player(game);
 //    spawn_tower(game, TOWER);
+    printf("hi");
+    printf("hello");
     spawn_enemy(game,100,3);
+    printf("hello");
 
     while(1)
     {
@@ -129,16 +149,16 @@ int main() {
 
  //       printf("before astar");
 
-        point_t move=  astar(game->enemy_head->point, game->enemy_head->dest, game->map);
-        game->enemy_head->point.x = move.x;
-        game->enemy_head->point.y = move.y;
+        point_t move=  astar(game->e_manager->enemy_head->point, game->e_manager->enemy_head->dest, game->map);
+        game->e_manager->enemy_head->point.x = move.x;
+        game->e_manager->enemy_head->point.y = move.y;
  //       printf("after");
 
         xt_par0(XT_CLEAR_SCREEN);
         draw_ui();
         draw_towers(game);
         draw(&game->player.point, get_sprite(PLAYER));
-        draw(&game->enemy_head->point, get_sprite(MONSTER));
+        draw(&game->e_manager->enemy_head->point, get_sprite(MONSTER));
         /*
         int i,j;
         for(i=0;i!= 11; ++i) {
