@@ -59,6 +59,6 @@ tower_t* spawn_tower(game_t* game, int type);
 
 enemy_t* spawn_enemy(game_t* game, int health, int speed);
 void init_em(enemy_manager_t** p_em, int timer);
-void execute_em(enemy_manager_t* em, char** map);
+void execute_em(game_t* game);
 
 game_t* init_game();

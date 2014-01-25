@@ -1,5 +1,5 @@
-game:	game.o keyboard.o xterm_control.o graphics.o astar.o
-	gcc game.o graphics.o keyboard.o xterm_control.o astar.o -o game
+game:	game.o keyboard.o xterm_control.o graphics.o astar.o entities.o
+	gcc game.o graphics.o keyboard.o xterm_control.o astar.o entities.o -o game
 
 game.o:	game.c
 	gcc -c game.c
@@ -15,3 +15,6 @@ graphics.o: graphics.c
 
 astar.o: astar.c
 	gcc -c astar.c
+
+entities.o: entities.c
+	gcc -c entities.c

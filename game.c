@@ -91,13 +91,14 @@ int main() {
 
  //       printf("after");
 
-        execute_em(game->e_manager, game->map);
+        execute_em(game);
 
         xt_par0(XT_CLEAR_SCREEN);
         draw_ui();
         draw_towers(game);
         draw(&game->player.point, get_sprite(PLAYER));
         draw(&game->e_manager->enemy_head->point, get_sprite(MONSTER));
+        printf("%d", game->lives);
         /*
         int i,j;
         for(i=0;i!= 11; ++i) {
