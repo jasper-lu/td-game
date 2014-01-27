@@ -1,11 +1,12 @@
 #define PLAYER 0
 #define TOWER 1
 #define MONSTER 3
+#define BULLET 5
 
 #define MAX_ROWS 10
 #define MAX_HEIGHT 10
 
-#define NUM_SPRITES 2
+#define NUM_SPRITES 4
 #define MAX_SPRITE_HEIGHT 4
 #define SPRITE_WIDTH 7
 

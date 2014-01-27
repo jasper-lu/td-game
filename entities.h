@@ -41,14 +41,8 @@ struct enemy_manager_t {
 };
 typedef struct enemy_manager_t enemy_manager_t;
 
-struct fpoint_t {
-    float x;
-    float y;
-};
-typedef struct fpoint_t fpoint_t;
-
 struct bullet_t {
-    fpoint_t point;
+    point_t point;
     int dmg;
     long move_timer;
     long last_moved;

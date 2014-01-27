@@ -1,6 +1,27 @@
 #include "entities.h"
 #include <stdlib.h>
 
+static char** bmap;
+static void bmap_init() {
+    int i,j;
+    int height = TILE_HEIGHT * MAP_HEIGHT + 2;
+    int width = TILE_WIDTH * MAP_WIDTH + 2;
+    bmap = calloc(height, sizeof(char*));
+    for(i = 0; i != height; ++i) {
+        bmap[i] = calloc(width,sizeof(char));
+    }
+    for(i=0;i!= height; ++i) {
+        for(j=0;j!=width; ++j) {
+            if(i == 0 || j == 0 || i == height + 1 || j == width + 1 )
+                bmap[i][j] = 'x';
+            else
+                bmap[i][j] = ' ';
+        }
+    }
+
+}
+
+
 void spawn_player(game_t* game) {
     game->player = (player_t){(point_t){0,0}};
 }
@@ -41,13 +62,23 @@ bullet_t* spawn_bullet(game_t* game, enemy_t* target, point_t point, int damage,
     struct timespec temp;
     clock_gettime(CLOCK_REALTIME, &temp);
     long lm = temp.tv_sec * NANO + temp.tv_nsec;
-    *temp_bullet = (bullet_t) {(fpoint_t){point.x,point.y}, damage, NANO/speed, lm, target, game->bullet_head};
+    *temp_bullet = (bullet_t) {(point_t){point.x,point.y}, damage, NANO/speed*5, lm, target, game->bullet_head};
     //bullet chain in game
     game->bullet_head = temp_bullet;
     return temp_bullet;
 }
 
 //ben kurtovic thanks. Way to despawn without being overly complicated
+bullet_t* despawn_bullet(game_t* game, bullet_t* bullet, bullet_t* prev) {
+    bullet_t* next = bullet->next;
+    if(prev)
+        prev->next = next;
+    else
+        game->bullet_head = next;
+    free(enemy);
+    return next;
+}
+
 enemy_t* despawn_enemy(enemy_manager_t* em, enemy_t* enemy, enemy_t* prev) {
     enemy_t* next = enemy->next;
     if (prev)
@@ -106,20 +137,25 @@ static void enemy_move(enemy_t* p_e, enemy_t* prev, game_t* game) {
 
 
 
-static void bullet_move(bullet_t* p_b, bullet_t* prev, game_t* game) {
+static void bullet_move(bullet_t* p_b, bullet_t* prev, point_t dest, game_t* game) {
+    if(!bmap)
+        bmap_init();
     struct timespec temp;
     clock_gettime(CLOCK_REALTIME, &temp);
     long lm = temp.tv_sec * NANO + temp.tv_nsec; 
     if(lm - p_b->last_moved > p_b->move_timer) { 
-        //simple mvoe thing 
+        point_t move = astar(p_b->point, dest, bmap);
+        p_b->point.x = move.x;
+        p_b->point.y = move.y;
+        p_b->last_moved = lm;
     } 
 } 
-
+//contains all bullet actions, i.e. collision checking, and movement
 void execute_bt(game_t* game) {
     bullet_t* prev = NULL;
     bullet_t* p_b = game->bullet_head; 
     while(p_b != NULL) { 
-        bullet_move(p_b,prev,game);
+       bullet_move(p_b,prev,tile_convert(&p_b->target->point),game);
         prev = p_b;
         p_b = p_b->next;
     }
@@ -132,7 +168,7 @@ void execute_em(game_t* game) {
         //enemy death
         //enemy raeched the end
         //etc
-        enemy_move(p_e, prev, game);
+        enemy_move(p_e, prev,game);
         prev = p_e;
         p_e = p_e->next;
     }

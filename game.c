@@ -93,13 +93,15 @@ int main() {
  //       printf("after");
 
         execute_em(game);
-  //      execute_bt(game);
+      execute_bt(game);
         xt_par0(XT_CLEAR_SCREEN);
         draw_ui();
         draw_towers(game);
         draw(tile_convert(&game->player.point), get_sprite(PLAYER));
+        draw(game->bullet_head->point, get_sprite(BULLET)); 
         if(game->e_manager->enemy_head)
             draw(tile_convert(&game->e_manager->enemy_head->point), get_sprite(MONSTER));
+        /*
         int i,j;
         for(i=0;i!= 11; ++i) {
          for(j=0;j!= 22; ++j) {
@@ -107,6 +109,7 @@ int main() {
         }
          printf("\n");
     }
+    */
 
         xt_par2(XT_SET_ROW_COL_POS,999,999);
 

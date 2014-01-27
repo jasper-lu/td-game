@@ -82,6 +82,11 @@ static void init_sprites(void) {
             " ═╝ ╚═ "
         }, 4, 15, XT_CH_RED
     };
+    sprite_table[BULLET] = (sprite_t) {
+        {
+            "o"
+        }, 1, 1, XT_CH_BLUE
+    };
 }
 
 
