@@ -41,6 +41,7 @@ int main() {
     spawn_player(game);
 //    spawn_tower(game, TOWER);
     spawn_enemy(game,100,1);
+    spawn_bullet(game,game->e_manager->enemy_head, (point_t){5,5}, 20, 2);
 
     while(1)
     {
@@ -92,7 +93,7 @@ int main() {
  //       printf("after");
 
         execute_em(game);
-
+  //      execute_bt(game);
         xt_par0(XT_CLEAR_SCREEN);
         draw_ui();
         draw_towers(game);

@@ -35,13 +35,15 @@ enemy_t* spawn_enemy(game_t* game, int health, int speed) {
     return temp_enemy;
 }
 
+//bullet spawn. bullet coord system is different from the others, in that it is pixel-based rather than tile-based
 bullet_t* spawn_bullet(game_t* game, enemy_t* target, point_t point, int damage, int speed) {
     bullet_t* temp_bullet = malloc(sizeof(bullet_t));
     struct timespec temp;
     clock_gettime(CLOCK_REALTIME, &temp);
     long lm = temp.tv_sec * NANO + temp.tv_nsec;
-    *temp_bullet = (bullet_t) {(point_t){point.x,point.y}, damage, NANO/speed, lm, target};
+    *temp_bullet = (bullet_t) {(fpoint_t){point.x,point.y}, damage, NANO/speed, lm, target, game->bullet_head};
     //bullet chain in game
+    game->bullet_head = temp_bullet;
     return temp_bullet;
 }
 
@@ -99,6 +101,27 @@ static void enemy_move(enemy_t* p_e, enemy_t* prev, game_t* game) {
             p_e->point.y = move.y;
             p_e->last_moved = lm; 
         }
+    }
+}
+
+
+
+static void bullet_move(bullet_t* p_b, bullet_t* prev, game_t* game) {
+    struct timespec temp;
+    clock_gettime(CLOCK_REALTIME, &temp);
+    long lm = temp.tv_sec * NANO + temp.tv_nsec; 
+    if(lm - p_b->last_moved > p_b->move_timer) { 
+        //simple mvoe thing 
+    } 
+} 
+
+void execute_bt(game_t* game) {
+    bullet_t* prev = NULL;
+    bullet_t* p_b = game->bullet_head; 
+    while(p_b != NULL) { 
+        bullet_move(p_b,prev,game);
+        prev = p_b;
+        p_b = p_b->next;
     }
 }
 

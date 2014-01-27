@@ -41,25 +41,32 @@ struct enemy_manager_t {
 };
 typedef struct enemy_manager_t enemy_manager_t;
 
+struct fpoint_t {
+    float x;
+    float y;
+};
+typedef struct fpoint_t fpoint_t;
+
+struct bullet_t {
+    fpoint_t point;
+    int dmg;
+    long move_timer;
+    long last_moved;
+    enemy_t* target;
+    struct bullet_t* next;
+};
+typedef struct bullet_t bullet_t;
+
 struct game_t {
     int money;
     int lives;
     player_t player;
     enemy_manager_t* e_manager;
     tower_t* tower_head;
+    bullet_t* bullet_head;
     char** map;
 };
 typedef struct game_t game_t;
-
-struct bullet_t {
-    point_t point;
-    int dmg;
-    long move_timer;
-    long last_moved;
-    enemy_t* target;
-}
-typedef struct bullet_t bullet_t;
-
 //prototypes
 void spawn_player(game_t* game);
 
@@ -69,5 +76,8 @@ tower_t* spawn_tower(game_t* game, int type);
 enemy_t* spawn_enemy(game_t* game, int health, int speed);
 void init_em(enemy_manager_t** p_em, int timer);
 void execute_em(game_t* game);
+
+bullet_t* spawn_bullet(game_t* game, enemy_t* target, point_t point, int damage, int speed);
+void execute_bt(game_t* game);
 
 game_t* init_game();
