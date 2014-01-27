@@ -51,6 +51,15 @@ struct game_t {
 };
 typedef struct game_t game_t;
 
+struct bullet_t {
+    point_t point;
+    int dmg;
+    long move_timer;
+    long last_moved;
+    enemy_t* target;
+}
+typedef struct bullet_t bullet_t;
+
 //prototypes
 void spawn_player(game_t* game);
 

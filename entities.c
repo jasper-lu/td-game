@@ -8,14 +8,18 @@ void spawn_player(game_t* game) {
 void draw_towers(game_t* game) {
     tower_t* temp = game->tower_head;
     while(temp) {
-        draw(&temp->point, get_sprite(temp->type));
+        draw(tile_convert(&temp->point), get_sprite(temp->type));
         temp = temp->next;
     }
 }
 
 tower_t* spawn_tower(game_t* game, int type) {
     tower_t* temp_tower = malloc(sizeof(tower_t));
-    *temp_tower = (tower_t) {(point_t) {game->player.point.x,game->player.point.y}, 10, 30, 0, TOWER, game->tower_head};
+    int p_x = game->player.point.x;
+    int p_y = game->player.point.y;
+    *temp_tower = (tower_t) {(point_t) {p_x, p_y}, 10, 30, 0, TOWER, game->tower_head};
+    char ** map = game->map;
+    map[p_y+1][p_x+1] = 'x';
     game->tower_head = temp_tower;
     return temp_tower;
 }
@@ -29,6 +33,16 @@ enemy_t* spawn_enemy(game_t* game, int health, int speed) {
     *temp_enemy = (enemy_t) {(point_t) {0,4}, (point_t){19,4},NANO/speed,lm,health,game->e_manager->enemy_head};
     game->e_manager->enemy_head = temp_enemy;
     return temp_enemy;
+}
+
+bullet_t* spawn_bullet(game_t* game, enemy_t* target, point_t point, int damage, int speed) {
+    bullet_t* temp_bullet = malloc(sizeof(bullet_t));
+    struct timespec temp;
+    clock_gettime(CLOCK_REALTIME, &temp);
+    long lm = temp.tv_sec * NANO + temp.tv_nsec;
+    *temp_bullet = (bullet_t) {(point_t){point.x,point.y}, damage, NANO/speed, lm, target};
+    //bullet chain in game
+    return temp_bullet;
 }
 
 //ben kurtovic thanks. Way to despawn without being overly complicated
