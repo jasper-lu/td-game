@@ -41,7 +41,8 @@ int main() {
     spawn_player(game);
 //    spawn_tower(game, TOWER);
     spawn_enemy(game,100,1);
-    spawn_bullet(game,game->e_manager->enemy_head, (point_t){5,5}, 20, 2);
+    //bullets move 7x faster than the speed -- estimated width/height of everything
+    //spawn_bullet(game,game->e_manager->enemy_head, (point_t){80,5}, 40, 20);
 
     while(1)
     {
@@ -91,14 +92,17 @@ int main() {
  //       printf("before astar");
 
  //       printf("after");
-
+        execute_bt(game);
         execute_em(game);
-      execute_bt(game);
         xt_par0(XT_CLEAR_SCREEN);
         draw_ui();
+
         draw_towers(game);
+        draw_bullets(game);
         draw(tile_convert(&game->player.point), get_sprite(PLAYER));
-        draw(game->bullet_head->point, get_sprite(BULLET)); 
+
+
+
         if(game->e_manager->enemy_head)
             draw(tile_convert(&game->e_manager->enemy_head->point), get_sprite(MONSTER));
         /*

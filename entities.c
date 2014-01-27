@@ -34,6 +34,14 @@ void draw_towers(game_t* game) {
     }
 }
 
+void draw_bullets(game_t* game) {
+    bullet_t* bullet = game->bullet_head;
+    while(bullet) {
+        draw(bullet->point, get_sprite(BULLET));
+        bullet = bullet->next;
+    }
+}
+
 tower_t* spawn_tower(game_t* game, int type) {
     tower_t* temp_tower = malloc(sizeof(tower_t));
     int p_x = game->player.point.x;
@@ -62,24 +70,28 @@ bullet_t* spawn_bullet(game_t* game, enemy_t* target, point_t point, int damage,
     struct timespec temp;
     clock_gettime(CLOCK_REALTIME, &temp);
     long lm = temp.tv_sec * NANO + temp.tv_nsec;
-    *temp_bullet = (bullet_t) {(point_t){point.x,point.y}, damage, NANO/speed*5, lm, target, game->bullet_head};
+    *temp_bullet = (bullet_t) {(point_t){point.x,point.y}, damage, NANO/(speed*7), lm, target, game->bullet_head};
     //bullet chain in game
     game->bullet_head = temp_bullet;
     return temp_bullet;
 }
 
 //ben kurtovic thanks. Way to despawn without being overly complicated
-bullet_t* despawn_bullet(game_t* game, bullet_t* bullet, bullet_t* prev) {
+bullet_t* despawn_bullet(bullet_t* bullet, bullet_t* prev, game_t* game) {
     bullet_t* next = bullet->next;
-    if(prev)
+    if(prev){
+        //printf("wrong");
         prev->next = next;
-    else
+    }else{
+        //printf("head is next\n");
         game->bullet_head = next;
-    free(enemy);
+    }
+    free(bullet);
+    //    bullet = NULL;
     return next;
 }
 
-enemy_t* despawn_enemy(enemy_manager_t* em, enemy_t* enemy, enemy_t* prev) {
+enemy_t* despawn_enemy(enemy_t* enemy, enemy_t* prev, enemy_manager_t* em) {
     enemy_t* next = enemy->next;
     if (prev)
         prev->next = next;
@@ -125,7 +137,7 @@ static void enemy_move(enemy_t* p_e, enemy_t* prev, game_t* game) {
     if(lm - p_e-> last_moved > p_e->move_timer) {
         //check before moving
         if(enemy_check_finish(p_e, game)) {
-            despawn_enemy(game->e_manager,p_e,prev);
+            despawn_enemy(p_e,prev,game->e_manager);
         }else{
             point_t move = astar(p_e->point, p_e->dest, game->map);
             p_e->point.x = move.x;
@@ -135,7 +147,18 @@ static void enemy_move(enemy_t* p_e, enemy_t* prev, game_t* game) {
     }
 }
 
+static void dmg_enemy(enemy_t* enemy, int dmg) {
+    enemy->health -= dmg;
+}
 
+static int bullet_collision(bullet_t* p_b, bullet_t* prev, point_t dest, game_t* game) {
+    if(p_b->point.x == dest.x && p_b->point.y == dest.y) {
+        dmg_enemy(p_b->target, p_b->dmg);
+        despawn_bullet(p_b, prev, game);
+        return 1;
+    }
+    return 0;
+}
 
 static void bullet_move(bullet_t* p_b, bullet_t* prev, point_t dest, game_t* game) {
     if(!bmap)
@@ -144,21 +167,44 @@ static void bullet_move(bullet_t* p_b, bullet_t* prev, point_t dest, game_t* gam
     clock_gettime(CLOCK_REALTIME, &temp);
     long lm = temp.tv_sec * NANO + temp.tv_nsec; 
     if(lm - p_b->last_moved > p_b->move_timer) { 
+        //printf("bullet astar before\n");
+        //printf("%d",p_b->point.x);
+        //printf("%d",dest.x);
         point_t move = astar(p_b->point, dest, bmap);
+        //printf("bullet astar after\n");
         p_b->point.x = move.x;
         p_b->point.y = move.y;
         p_b->last_moved = lm;
     } 
 } 
+
+
 //contains all bullet actions, i.e. collision checking, and movement
 void execute_bt(game_t* game) {
     bullet_t* prev = NULL;
     bullet_t* p_b = game->bullet_head; 
     while(p_b != NULL) { 
-       bullet_move(p_b,prev,tile_convert(&p_b->target->point),game);
+        point_t targ = tile_convert(&p_b->target->point);
+        if(bullet_collision(p_b, prev, targ, game)) {
+            break;
+        }
+        bullet_move(p_b,prev,targ,game);
         prev = p_b;
         p_b = p_b->next;
     }
+    //check all the enemies for deaths here
+    p_b = game->bullet_head; 
+    prev = NULL;
+    while(p_b != NULL) {
+        //this may cause the game to crash in some places. cross fingers and hope
+        if(p_b->target->health <= 0)
+            p_b = despawn_bullet(p_b, prev, game);
+        else{
+            prev = p_b;
+            p_b = p_b->next;
+        }
+    }
+    //printf("nope");
 }
 
 void execute_em(game_t* game) {
@@ -168,9 +214,30 @@ void execute_em(game_t* game) {
         //enemy death
         //enemy raeched the end
         //etc
-        enemy_move(p_e, prev,game);
-        prev = p_e;
-        p_e = p_e->next;
+        if(p_e->health <= 0) {
+            p_e = despawn_enemy(p_e, prev, game->e_manager);
+            return;
+        }else{
+            enemy_move(p_e, prev,game);
+            prev = p_e;
+            p_e = p_e->next;
+        }
+
     }
 }
 
+static int in_range(point_t* center, point_t* node, int r) {
+    return abs(center->x - node->x) <= r && abs(center->y - node->y) <= r;
+}
+
+void execute_tw(game_t* game) {
+    tower_t* p_t = game->tower_head;
+    enemy_t* p_e;
+    while(p_t != NULL) { 
+        p_e = game->e_manager->enemy_head;
+        while(p_e != NULL) {
+            if(in_range(&p_t->point,&p_e->point,2))
+                spawn_bullet(game, p_e, tile_convert(&p_t->point), p_t->power, 10);
+        }
+    }
+}
