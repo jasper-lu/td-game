@@ -46,7 +46,14 @@ tower_t* spawn_tower(game_t* game, int type) {
     tower_t* temp_tower = malloc(sizeof(tower_t));
     int p_x = game->player.point.x;
     int p_y = game->player.point.y;
-    *temp_tower = (tower_t) {(point_t) {p_x, p_y}, 10, 30, 0, TOWER, game->tower_head};
+    //cooldown/fire timer
+
+    struct timespec temp;
+    clock_gettime(CLOCK_REALTIME, &temp);
+    long lm = temp.tv_sec * NANO + temp.tv_nsec;
+
+    //2 times per second base?
+    *temp_tower = (tower_t) {(point_t) {p_x, p_y}, 10, 2, 5, NANO/2, lm, TOWER, game->tower_head};
     char ** map = game->map;
     map[p_y+1][p_x+1] = 'x';
     game->tower_head = temp_tower;
@@ -234,10 +241,19 @@ void execute_tw(game_t* game) {
     tower_t* p_t = game->tower_head;
     enemy_t* p_e;
     while(p_t != NULL) { 
-        p_e = game->e_manager->enemy_head;
-        while(p_e != NULL) {
-            if(in_range(&p_t->point,&p_e->point,2))
-                spawn_bullet(game, p_e, tile_convert(&p_t->point), p_t->power, 10);
+        //the following lines, as in all the other execute functions, checks if the timer is good and then folllows through
+        struct timespec temp;
+        clock_gettime(CLOCK_REALTIME, &temp);
+        long lm = temp.tv_sec * NANO + temp.tv_nsec; 
+        if(lm - p_t->cooldown_timer > p_t->cooldown) { 
+            p_e = game->e_manager->enemy_head;
+            while(p_e != NULL) {
+                if(in_range(&p_t->point,&p_e->point,p_t->radius))
+                    spawn_bullet(game, p_e, tile_convert(&p_t->point), p_t->power, p_t->b_speed);
+                p_e = p_e->next;
+            }
+            p_t->cooldown_timer = lm;
         }
+        p_t = p_t->next;
     }
 }

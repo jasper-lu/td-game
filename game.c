@@ -94,15 +94,16 @@ int main() {
  //       printf("after");
         execute_bt(game);
         execute_em(game);
+        execute_tw(game);
         xt_par0(XT_CLEAR_SCREEN);
         draw_ui();
 
         draw_towers(game);
-        draw_bullets(game);
         draw(tile_convert(&game->player.point), get_sprite(PLAYER));
 
 
 
+        draw_bullets(game);
         if(game->e_manager->enemy_head)
             draw(tile_convert(&game->e_manager->enemy_head->point), get_sprite(MONSTER));
         /*

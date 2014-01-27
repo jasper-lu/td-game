@@ -12,8 +12,10 @@ typedef struct player_t player_t;
 struct tower_t {
     point_t point;
     int power;
-    int cooldown;
-    int cooldown_timer;
+    int radius;
+    int b_speed;
+    long cooldown;
+    long cooldown_timer;
     //tower type
     int type;
     struct tower_t* next;
@@ -34,9 +36,13 @@ typedef struct enemy_t enemy_t;
 struct enemy_manager_t {
     int level;
     //time to next wave
-    int wave_load;
+    long wave_load;
     //time until wave
-    int wave_timer;
+    long wave_timer;
+    //time to next spawn
+    long move_timer;
+    //last moved
+    long last_moved;
     enemy_t* enemy_head;
 };
 typedef struct enemy_manager_t enemy_manager_t;
