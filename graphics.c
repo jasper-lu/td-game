@@ -7,11 +7,11 @@ static sprite_t sprite_table[NUM_SPRITES] = {{{0}}};
 static int sprite_init = 0;
 static ui_template UI[] = {
     {0,UI_DIST,XT_CH_GREEN,"____________________________________________________________________________________________________________________________________________"},
-    {0,UI_DIST+1,XT_CH_GREEN," _______1|       2 |"},
-    {0,UI_DIST+2,XT_CH_GREEN," |\\___/| |"},
-    {0,UI_DIST+3,XT_CH_GREEN," | |A| | |"},
-    {0,UI_DIST+4,XT_CH_GREEN," |/___\\| |"},
-    {0,UI_DIST+5,XT_CH_GREEN,"100G_____|_________|________________________________________________________________________________________________________________________"},
+    {0,UI_DIST+1,XT_CH_GREEN,"        1|        2|        3|        4|        5|        6|        7|        8|        9|"},
+    {0,UI_DIST+2,XT_CH_GREEN,"         |         |         |         |         |         |         |         |         |"},
+    {0,UI_DIST+3,XT_CH_GREEN," |       |         |         |         |         |         |         |         |         |"},
+    {0,UI_DIST+4,XT_CH_GREEN," |       |         |         |         |         |         |         |         |         |"},
+    {0,UI_DIST+5,XT_CH_GREEN,"100G_____|_________|_________|_________|_________|_________|_________|_________|_________|__________________________________________________"},
     //for the entrance/exit
     {-1,BORDER_WIDTH - 2 + MAP_HEIGHT*TILE_HEIGHT / 2, XT_CH_GREEN,"─"},
     {-1,BORDER_WIDTH - 1 + MAP_HEIGHT*TILE_HEIGHT / 2, XT_CH_GREEN," "},
@@ -22,9 +22,12 @@ static ui_template UI[] = {
     {MAP_WIDTH*TILE_WIDTH,BORDER_WIDTH - 1 + MAP_HEIGHT*TILE_HEIGHT / 2, XT_CH_GREEN," "},
     {MAP_WIDTH*TILE_WIDTH,BORDER_WIDTH + MAP_HEIGHT*TILE_HEIGHT / 2, XT_CH_GREEN," "},
     {MAP_WIDTH*TILE_WIDTH,BORDER_WIDTH + 1 + MAP_HEIGHT*TILE_HEIGHT / 2, XT_CH_GREEN," "},
-    {MAP_WIDTH*TILE_WIDTH,BORDER_WIDTH + 2 + MAP_HEIGHT*TILE_HEIGHT / 2, XT_CH_GREEN,"_"}
+    {MAP_WIDTH*TILE_WIDTH,BORDER_WIDTH + 2 + MAP_HEIGHT*TILE_HEIGHT / 2, XT_CH_GREEN,"_"},
+    {MAP_WIDTH*TILE_WIDTH - 51, UI_DIST+2,XT_CH_GREEN, "| Lives:"},
+    {MAP_WIDTH*TILE_WIDTH - 51, UI_DIST+3,XT_CH_GREEN, "| Gold:"},
+    {MAP_WIDTH*TILE_WIDTH - 51, UI_DIST+4,XT_CH_GREEN, "| Souls:"},
 };
-static int ui_size = 16;
+static int ui_size = 19;
 
 void draw_ui() {
     int i;
@@ -44,6 +47,8 @@ void draw_ui() {
         SETPOS(UI[i].col + BORDER_WIDTH + 1, UI[i].row);
         printf("%s", UI[i].string);
     }
+    draw((point_t){3,UI_DIST+1},get_sprite(TOWER));
+    draw((point_t){23,UI_DIST+2},get_sprite(MONSTER));
 }
 
 static void init_sprites(void) {
@@ -86,12 +91,15 @@ sprite_t* get_sprite(int name) {
     return &sprite_table[name];
 }
 
-void draw(point_t* point, sprite_t* sprite) {
-    int t_x = point->x;
-    int t_y = point->y;
+//converts from tile coord to pixel coord
+point_t tile_convert(point_t* point) {
+    return (point_t){point->x * TILE_WIDTH + 1 + BORDER_WIDTH, point->y * TILE_HEIGHT + 1 + BORDER_WIDTH};
+}
+
+void draw(point_t point, sprite_t* sprite) {
     int r, c;
     for(r = 0; r!= sprite->height; r++){
-        SETPOS(t_x*TILE_WIDTH + 1 + BORDER_WIDTH, t_y * TILE_HEIGHT + r + 1 + BORDER_WIDTH);
+        SETPOS(point.x,point.y + r);
         for(c = 0; c!= sprite->width; ++c){
             putchar(sprite->graphic[r][c]);
         }

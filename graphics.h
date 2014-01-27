@@ -45,5 +45,6 @@ typedef struct ui_template ui_template;
 
 //borrowed & modded from ben kurtovic
 sprite_t* get_sprite(int);
-void draw(point_t*, sprite_t*);
+void draw(point_t, sprite_t*);
+point_t tile_convert(point_t* point);
 void draw_ui();

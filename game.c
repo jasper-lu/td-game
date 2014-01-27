@@ -40,7 +40,7 @@ int main() {
     point_t point;
     spawn_player(game);
 //    spawn_tower(game, TOWER);
-    spawn_enemy(game,100,5);
+    spawn_enemy(game,100,1);
 
     while(1)
     {
@@ -96,10 +96,9 @@ int main() {
         xt_par0(XT_CLEAR_SCREEN);
         draw_ui();
         draw_towers(game);
-        draw(&game->player.point, get_sprite(PLAYER));
-        draw(&game->e_manager->enemy_head->point, get_sprite(MONSTER));
-        printf("%d", game->lives);
-        /*
+        draw(tile_convert(&game->player.point), get_sprite(PLAYER));
+        if(game->e_manager->enemy_head)
+            draw(tile_convert(&game->e_manager->enemy_head->point), get_sprite(MONSTER));
         int i,j;
         for(i=0;i!= 11; ++i) {
          for(j=0;j!= 22; ++j) {
@@ -107,7 +106,6 @@ int main() {
         }
          printf("\n");
     }
-    */
 
         xt_par2(XT_SET_ROW_COL_POS,999,999);
 
