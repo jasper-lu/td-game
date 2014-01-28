@@ -39,9 +39,8 @@ int main() {
     init_map(game, MAP_WIDTH, MAP_HEIGHT);
     point_t point;
     spawn_player(game);
-//    spawn_tower(game, TOWER);
- //spawn_enemy(game,100,1);
-    set_spawn_wave(2, 5, game->e_manager);
+    //this is pissing me off, cause there are 10 of the monster bundled up here for some reason
+    set_spawn_wave(1, 10, game->e_manager);
     //bullets move 7x faster than the speed -- estimated width/height of everything
     //spawn_bullet(game,game->e_manager->enemy_head, (point_t){80,5}, 40, 20);
 
@@ -101,12 +100,11 @@ int main() {
 
         draw_towers(game);
         draw(tile_convert(&game->player.point), get_sprite(PLAYER));
-
-
-
         draw_bullets(game);
-        if(game->e_manager->enemy_head)
-            draw(tile_convert(&game->e_manager->enemy_head->point), get_sprite(MONSTER));
+        draw_enemies(game);
+
+
+
         /*
         int i,j;
         for(i=0;i!= 11; ++i) {

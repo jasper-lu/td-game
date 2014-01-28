@@ -34,6 +34,15 @@ void draw_towers(game_t* game) {
     }
 }
 
+void draw_enemies(game_t* game) {
+    enemy_t* temp = game->e_manager->enemy_head;
+    while(temp) {
+        draw(tile_convert(&temp->point), get_sprite(MONSTER));
+        temp = temp->next;
+    }
+
+}
+
 void draw_bullets(game_t* game) {
     bullet_t* bullet = game->bullet_head;
     while(bullet) {
@@ -219,8 +228,9 @@ static void spawn_wave(enemy_manager_t* em) {
         struct timespec temp;
         clock_gettime(CLOCK_REALTIME, &temp);
         long lm = temp.tv_sec * NANO + temp.tv_nsec; 
-        if(lm - em->wave_load > em->wave_timer) { 
-            spawn_enemy(em, 100, NANO / em->wave_load);
+        if(lm -em->last_moved > NANO/ em->speed) { 
+            spawn_enemy(em, 20, em->speed);
+        em->spawn_numb--;
         }
     }
 }
@@ -240,8 +250,8 @@ void execute_em(game_t* game) {
             prev = p_e;
             p_e = p_e->next;
         }
-        spawn_wave(game->e_manager);
     }
+        spawn_wave(game->e_manager);
 }
 
 static int in_range(point_t* center, point_t* node, int r) {
@@ -249,8 +259,13 @@ static int in_range(point_t* center, point_t* node, int r) {
 }
 
 void set_spawn_wave(int speed, int spawn_numb, enemy_manager_t* em) {
+    struct timespec temp;
+    clock_gettime(CLOCK_REALTIME, &temp);
+    long lm = temp.tv_sec * NANO + temp.tv_nsec;
     em->spawn_numb = spawn_numb;
-    em->wave_load = NANO/speed;
+    //this one will have the thing be wonky
+    em->speed = speed;
+    em->last_moved = lm;
 }
 
 void execute_tw(game_t* game) {
@@ -264,8 +279,10 @@ void execute_tw(game_t* game) {
         if(lm - p_t->cooldown_timer > p_t->cooldown) { 
             p_e = game->e_manager->enemy_head;
             while(p_e != NULL) {
-                if(in_range(&p_t->point,&p_e->point,p_t->radius))
+                if(in_range(&p_t->point,&p_e->point,p_t->radius)) {
                     spawn_bullet(game, p_e, tile_convert(&p_t->point), p_t->power, p_t->b_speed);
+                    break;
+                }
                 p_e = p_e->next;
             }
             p_t->cooldown_timer = lm;

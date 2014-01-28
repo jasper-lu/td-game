@@ -40,8 +40,9 @@ struct enemy_manager_t {
     long wave_timer;
     //time until wave
     long wave_load;
+    //will be calced to find the time to next spawn
     //time to next spawn
-    long move_timer;
+    int speed;
     //last moved
     long last_moved;
     enemy_t* enemy_head;
