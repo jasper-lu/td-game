@@ -40,7 +40,8 @@ int main() {
     point_t point;
     spawn_player(game);
 //    spawn_tower(game, TOWER);
-    spawn_enemy(game,100,1);
+ //spawn_enemy(game,100,1);
+    set_spawn_wave(2, 5, game->e_manager);
     //bullets move 7x faster than the speed -- estimated width/height of everything
     //spawn_bullet(game,game->e_manager->enemy_head, (point_t){80,5}, 40, 20);
 

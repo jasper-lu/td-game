@@ -60,14 +60,14 @@ tower_t* spawn_tower(game_t* game, int type) {
     return temp_tower;
 }
 
-enemy_t* spawn_enemy(game_t* game, int health, int speed) {
+enemy_t* spawn_enemy(enemy_manager_t* em, int health, int speed) {
     enemy_t* temp_enemy = malloc(sizeof(enemy_t));
     //magic numers for starting point and ending point. will change eventually??
     struct timespec temp;
     clock_gettime(CLOCK_REALTIME, &temp);
     long lm = temp.tv_sec * NANO + temp.tv_nsec;
-    *temp_enemy = (enemy_t) {(point_t) {0,4}, (point_t){19,4},NANO/speed,lm,health,game->e_manager->enemy_head};
-    game->e_manager->enemy_head = temp_enemy;
+    *temp_enemy = (enemy_t) {(point_t) {0,4}, (point_t){19,4},NANO/speed,lm,health,em->enemy_head};
+    em->enemy_head = temp_enemy;
     return temp_enemy;
 }
 
@@ -214,6 +214,17 @@ void execute_bt(game_t* game) {
     //printf("nope");
 }
 
+static void spawn_wave(enemy_manager_t* em) {
+    if(em->spawn_numb) {
+        struct timespec temp;
+        clock_gettime(CLOCK_REALTIME, &temp);
+        long lm = temp.tv_sec * NANO + temp.tv_nsec; 
+        if(lm - em->wave_load > em->wave_timer) { 
+            spawn_enemy(em, 100, NANO / em->wave_load);
+        }
+    }
+}
+
 void execute_em(game_t* game) {
     enemy_t* prev = NULL;
     enemy_t* p_e = game->e_manager->enemy_head;
@@ -229,12 +240,17 @@ void execute_em(game_t* game) {
             prev = p_e;
             p_e = p_e->next;
         }
-
+        spawn_wave(game->e_manager);
     }
 }
 
 static int in_range(point_t* center, point_t* node, int r) {
     return abs(center->x - node->x) <= r && abs(center->y - node->y) <= r;
+}
+
+void set_spawn_wave(int speed, int spawn_numb, enemy_manager_t* em) {
+    em->spawn_numb = spawn_numb;
+    em->wave_load = NANO/speed;
 }
 
 void execute_tw(game_t* game) {
