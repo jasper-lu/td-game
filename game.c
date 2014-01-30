@@ -95,6 +95,7 @@ int main() {
         execute_bt(game);
         execute_em(game);
         execute_tw(game);
+
         xt_par0(XT_CLEAR_SCREEN);
         draw_ui();
 
@@ -102,7 +103,6 @@ int main() {
         draw(tile_convert(&game->player.point), get_sprite(PLAYER));
         draw_bullets(game);
         draw_enemies(game);
-
 
 
         /*

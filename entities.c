@@ -121,6 +121,7 @@ void init_em(enemy_manager_t** p_em, int timer) {
     *p_em = malloc(sizeof(enemy_manager_t));
     enemy_manager_t* em = *p_em;
     em->level = 1;
+    //spawn in timer seconds
     em->wave_timer = timer;
     em->wave_load = 0;
     em->enemy_head = NULL;
@@ -230,7 +231,8 @@ static void spawn_wave(enemy_manager_t* em) {
         long lm = temp.tv_sec * NANO + temp.tv_nsec; 
         if(lm -em->last_moved > NANO/ em->speed) { 
             spawn_enemy(em, 20, em->speed);
-        em->spawn_numb--;
+            em->last_moved = lm;
+            em->spawn_numb--;
         }
     }
 }
@@ -251,7 +253,7 @@ void execute_em(game_t* game) {
             p_e = p_e->next;
         }
     }
-        spawn_wave(game->e_manager);
+    spawn_wave(game->e_manager);
 }
 
 static int in_range(point_t* center, point_t* node, int r) {
