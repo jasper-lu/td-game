@@ -35,12 +35,13 @@ int main() {
     setbuf(stdout,NULL);
     //game_t* game = malloc(sizeof(game_t)); 
     game_t* game = init_game();
-    init_em(&game->e_manager, 5);
+    //5 seconds to first spawn
+    init_em(&game->e_manager, 4);
     init_map(game, MAP_WIDTH, MAP_HEIGHT);
     point_t point;
     spawn_player(game);
     //this is pissing me off, cause there are 10 of the monster bundled up here for some reason
-    set_spawn_wave(1, 10, game->e_manager);
+    //set_spawn_wave(1, 10, game->e_manager);
     //bullets move 7x faster than the speed -- estimated width/height of everything
     //spawn_bullet(game,game->e_manager->enemy_head, (point_t){80,5}, 40, 20);
 
@@ -95,6 +96,7 @@ int main() {
         execute_bt(game);
         execute_em(game);
         execute_tw(game);
+        /*
 
         xt_par0(XT_CLEAR_SCREEN);
         draw_ui();
@@ -103,6 +105,7 @@ int main() {
         draw(tile_convert(&game->player.point), get_sprite(PLAYER));
         draw_bullets(game);
         draw_enemies(game);
+        */
 
 
         /*

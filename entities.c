@@ -122,8 +122,13 @@ void init_em(enemy_manager_t** p_em, int timer) {
     enemy_manager_t* em = *p_em;
     em->level = 1;
     //spawn in timer seconds
-    em->wave_timer = timer;
-    em->wave_load = 0;
+    em->wave_timer = timer*NANO;
+    struct timespec temp;
+    clock_gettime(CLOCK_REALTIME, &temp);
+    long lm = temp.tv_sec * NANO + temp.tv_nsec;
+    em->wave_load = lm;
+    printf("wave_tiemr: %lu", em->wave_timer);
+    printf("wave_load: %lu", em->wave_load);
     em->enemy_head = NULL;
 }
 
@@ -229,11 +234,33 @@ static void spawn_wave(enemy_manager_t* em) {
         struct timespec temp;
         clock_gettime(CLOCK_REALTIME, &temp);
         long lm = temp.tv_sec * NANO + temp.tv_nsec; 
-        if(lm -em->last_moved > NANO/ em->speed) { 
-            spawn_enemy(em, 20, em->speed);
+        if(lm -em->last_moved >=NANO/ em->speed) { 
+            spawn_enemy(em, em->health, em->speed);
             em->last_moved = lm;
             em->spawn_numb--;
         }
+    }
+}
+
+static void spawn_wave_check(enemy_manager_t* em) {
+    struct timespec temp;
+    clock_gettime(CLOCK_REALTIME, &temp);
+    long lm = temp.tv_sec * NANO + temp.tv_nsec; 
+ 
+    if( lm > em->wave_timer + em->wave_load) {
+    printf("lhs : %lu; rhs: %lu FEIWGIEWG\n", lm-em->wave_load, em->wave_timer);
+        //really dumb scaling algorithm whoops shoot me
+       printf("spawn wave setYOYOYO");
+        int i = em->level;
+        if(i%2) {
+  //          printf("hi");
+            //set spawn to scale sped 
+            set_spawn_wave(em->level/2 + 1, i * 10, 5, em);
+        }else{
+   //         printf("o");
+            set_spawn_wave(em->level/2 + 1, i*10 + 10, 5, em);
+        }
+        em->wave_load = lm;
     }
 }
 
@@ -253,6 +280,7 @@ void execute_em(game_t* game) {
             p_e = p_e->next;
         }
     }
+    spawn_wave_check(game->e_manager);
     spawn_wave(game->e_manager);
 }
 
@@ -260,14 +288,17 @@ static int in_range(point_t* center, point_t* node, int r) {
     return abs(center->x - node->x) <= r && abs(center->y - node->y) <= r;
 }
 
-void set_spawn_wave(int speed, int spawn_numb, enemy_manager_t* em) {
+void set_spawn_wave(int speed, int health, int spawn_numb, enemy_manager_t* em) {
+    printf("spawn wave set");
     struct timespec temp;
     clock_gettime(CLOCK_REALTIME, &temp);
     long lm = temp.tv_sec * NANO + temp.tv_nsec;
     em->spawn_numb = spawn_numb;
     //this one will have the thing be wonky
+    printf("the speed is: %lu\n", em->speed);
     em->speed = speed;
     em->last_moved = lm;
+    em->health = health;
 }
 
 void execute_tw(game_t* game) {

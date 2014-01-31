@@ -45,6 +45,8 @@ struct enemy_manager_t {
     int speed;
     //last moved
     long last_moved;
+//    health of the mobs of the current wave
+    int health;
     enemy_t* enemy_head;
 };
 typedef struct enemy_manager_t enemy_manager_t;
@@ -82,5 +84,5 @@ void execute_em(game_t* game);
 bullet_t* spawn_bullet(game_t* game, enemy_t* target, point_t point, int damage, int speed);
 void execute_bt(game_t* game);
 
-void set_spawn_wave(int speed, int spawn_numb, enemy_manager_t* em);
+void set_spawn_wave(int speed, int health, int spawn_numb, enemy_manager_t* em);
 game_t* init_game();
