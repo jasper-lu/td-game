@@ -36,7 +36,7 @@ int main() {
     //game_t* game = malloc(sizeof(game_t)); 
     game_t* game = init_game();
     //5 seconds to first spawn
-    init_em(&game->e_manager, 4);
+    init_em(&game->e_manager, 10);
     init_map(game, MAP_WIDTH, MAP_HEIGHT);
     point_t point;
     spawn_player(game);
@@ -96,7 +96,6 @@ int main() {
         execute_bt(game);
         execute_em(game);
         execute_tw(game);
-        /*
 
         xt_par0(XT_CLEAR_SCREEN);
         draw_ui();
@@ -105,7 +104,6 @@ int main() {
         draw(tile_convert(&game->player.point), get_sprite(PLAYER));
         draw_bullets(game);
         draw_enemies(game);
-        */
 
 
         /*

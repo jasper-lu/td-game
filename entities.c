@@ -118,17 +118,20 @@ enemy_t* despawn_enemy(enemy_t* enemy, enemy_t* prev, enemy_manager_t* em) {
 }
 
 void init_em(enemy_manager_t** p_em, int timer) {
-    *p_em = malloc(sizeof(enemy_manager_t));
-    enemy_manager_t* em = *p_em;
-    em->level = 1;
-    //spawn in timer seconds
-    em->wave_timer = timer*NANO;
     struct timespec temp;
     clock_gettime(CLOCK_REALTIME, &temp);
     long lm = temp.tv_sec * NANO + temp.tv_nsec;
+    *p_em = calloc(sizeof(enemy_manager_t), 1);
+    enemy_manager_t* em = *p_em;
+    em->level = 1;
+    long l_temp = NANO;
+    printf("%ld", l_temp);
+    //spawn in timer seconds
+    em->wave_timer = (long)NANO*timer;
     em->wave_load = lm;
-    printf("wave_tiemr: %lu", em->wave_timer);
-    printf("wave_load: %lu", em->wave_load);
+    printf("wave_tiemr: %ld", em->wave_timer);
+    printf("\n%ld x %ld = %ld\n", NANO, timer, (long)NANO*timer);
+    printf("wave_load: %ld", em->wave_load);
     em->enemy_head = NULL;
 }
 
@@ -247,8 +250,8 @@ static void spawn_wave_check(enemy_manager_t* em) {
     clock_gettime(CLOCK_REALTIME, &temp);
     long lm = temp.tv_sec * NANO + temp.tv_nsec; 
  
-    if( lm > em->wave_timer + em->wave_load) {
-    printf("lhs : %lu; rhs: %lu FEIWGIEWG\n", lm-em->wave_load, em->wave_timer);
+    if( lm-em->wave_load > em->wave_timer ) {
+    printf("lhs : %lu; rhs: %lu FEIWGIEWG\n",em->wave_load, em->wave_timer);
         //really dumb scaling algorithm whoops shoot me
        printf("spawn wave setYOYOYO");
         int i = em->level;
