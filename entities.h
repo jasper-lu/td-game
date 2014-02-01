@@ -29,6 +29,7 @@ struct enemy_t {
     long move_timer;
     long last_moved;
     int health;
+    int money;
     struct enemy_t* next;
 };
 typedef struct enemy_t enemy_t;
@@ -47,6 +48,7 @@ struct enemy_manager_t {
     long last_moved;
 //    health of the mobs of the current wave
     int health;
+    int money;
     enemy_t* enemy_head;
 };
 typedef struct enemy_manager_t enemy_manager_t;
@@ -77,12 +79,11 @@ void spawn_player(game_t* game);
 void draw_towers(game_t* game);
 tower_t* spawn_tower(game_t* game, int type);
 
-enemy_t* spawn_enemy(enemy_manager_t* em, int health, int speed);
 void init_em(enemy_manager_t** p_em, int timer);
 void execute_em(game_t* game);
 
 bullet_t* spawn_bullet(game_t* game, enemy_t* target, point_t point, int damage, int speed);
 void execute_bt(game_t* game);
 
-void set_spawn_wave(int speed, int health, int spawn_numb, enemy_manager_t* em);
+void set_spawn_wave(int speed, int health, int spawn_numb, int money, enemy_manager_t* em);
 game_t* init_game();

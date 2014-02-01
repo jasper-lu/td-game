@@ -1,4 +1,5 @@
 #include "entities.h"
+#include "xterm_control.h"
 #include <stdlib.h>
 
 static char** bmap;
@@ -52,6 +53,9 @@ void draw_bullets(game_t* game) {
 }
 
 tower_t* spawn_tower(game_t* game, int type) {
+    //hard codedd stuff. shoot me
+    if(game->money < 60)
+        return ;
     tower_t* temp_tower = malloc(sizeof(tower_t));
     int p_x = game->player.point.x;
     int p_y = game->player.point.y;
@@ -66,16 +70,21 @@ tower_t* spawn_tower(game_t* game, int type) {
     char ** map = game->map;
     map[p_y+1][p_x+1] = 'x';
     game->tower_head = temp_tower;
+    game->money -= 60;
     return temp_tower;
 }
 
-enemy_t* spawn_enemy(enemy_manager_t* em, int health, int speed) {
+static enemy_t* spawn_enemy(enemy_manager_t* em, int health, int speed, int money) {
     enemy_t* temp_enemy = malloc(sizeof(enemy_t));
     //magic numers for starting point and ending point. will change eventually??
     struct timespec temp;
     clock_gettime(CLOCK_REALTIME, &temp);
     long lm = temp.tv_sec * NANO + temp.tv_nsec;
-    *temp_enemy = (enemy_t) {(point_t) {0,4}, (point_t){19,4},NANO/speed,lm,health,em->enemy_head};
+    //randomize a little
+    int m_money = rand() % 20 - 9 + money;
+    if(m_money < 0)
+        m_money = 5;
+    *temp_enemy = (enemy_t) {(point_t) {0,4}, (point_t){19,4},NANO/speed,lm,health,m_money,em->enemy_head};
     em->enemy_head = temp_enemy;
     return temp_enemy;
 }
@@ -123,7 +132,7 @@ void init_em(enemy_manager_t** p_em, int timer) {
     long lm = temp.tv_sec * NANO + temp.tv_nsec;
     *p_em = calloc(sizeof(enemy_manager_t), 1);
     enemy_manager_t* em = *p_em;
-    em->level = 1;
+    em->level = 0;
     long l_temp = NANO;
     printf("%ld", l_temp);
     //spawn in timer seconds
@@ -137,7 +146,7 @@ void init_em(enemy_manager_t** p_em, int timer) {
 
 game_t* init_game() {
     game_t* game = malloc(sizeof(game_t));
-    game->money = 0;
+    game->money = 80;
     game->lives = 20;
     return game;
 }
@@ -238,7 +247,7 @@ static void spawn_wave(enemy_manager_t* em) {
         clock_gettime(CLOCK_REALTIME, &temp);
         long lm = temp.tv_sec * NANO + temp.tv_nsec; 
         if(lm -em->last_moved >=NANO/ em->speed) { 
-            spawn_enemy(em, em->health, em->speed);
+            spawn_enemy(em, em->health, em->speed, em->money);
             em->last_moved = lm;
             em->spawn_numb--;
         }
@@ -250,21 +259,27 @@ static void spawn_wave_check(enemy_manager_t* em) {
     clock_gettime(CLOCK_REALTIME, &temp);
     long lm = temp.tv_sec * NANO + temp.tv_nsec; 
  
-    if( lm-em->wave_load > em->wave_timer ) {
-    printf("lhs : %lu; rhs: %lu FEIWGIEWG\n",em->wave_load, em->wave_timer);
+    //if there are still enemies on the field
+    if(em->enemy_head) 
+        em->wave_load = lm;
+    if( lm-em->wave_load > em->wave_timer && !em->enemy_head) {
         //really dumb scaling algorithm whoops shoot me
-       printf("spawn wave setYOYOYO");
+        em->level++;
         int i = em->level;
         if(i%2) {
   //          printf("hi");
             //set spawn to scale sped 
-            set_spawn_wave(em->level/2 + 1, i * 10, 5, em);
+            set_spawn_wave(em->level/3 + 1, (i * 10) / 2, 5, (em->level / 2) * 10 + 5, em);
         }else{
    //         printf("o");
-            set_spawn_wave(em->level/2 + 1, i*10 + 10, 5, em);
+            set_spawn_wave(em->level/3 + 1, (i*10) / 2 + 5, 5, (em->level / 2) * 10 + 5, em);
         }
         em->wave_load = lm;
     }
+}
+
+static void payday(game_t* game, int mulah) {
+    game->money += mulah;
 }
 
 void execute_em(game_t* game) {
@@ -275,6 +290,7 @@ void execute_em(game_t* game) {
         //enemy raeched the end
         //etc
         if(p_e->health <= 0) {
+            payday(game, p_e->money);
             p_e = despawn_enemy(p_e, prev, game->e_manager);
             return;
         }else{
@@ -291,7 +307,7 @@ static int in_range(point_t* center, point_t* node, int r) {
     return abs(center->x - node->x) <= r && abs(center->y - node->y) <= r;
 }
 
-void set_spawn_wave(int speed, int health, int spawn_numb, enemy_manager_t* em) {
+void set_spawn_wave(int speed, int health, int spawn_numb, int money, enemy_manager_t* em) {
     printf("spawn wave set");
     struct timespec temp;
     clock_gettime(CLOCK_REALTIME, &temp);
@@ -302,6 +318,7 @@ void set_spawn_wave(int speed, int health, int spawn_numb, enemy_manager_t* em) 
     em->speed = speed;
     em->last_moved = lm;
     em->health = health;
+    em->money = money;
 }
 
 void execute_tw(game_t* game) {

@@ -23,11 +23,12 @@ static ui_template UI[] = {
     {MAP_WIDTH*TILE_WIDTH,BORDER_WIDTH + MAP_HEIGHT*TILE_HEIGHT / 2, XT_CH_GREEN," "},
     {MAP_WIDTH*TILE_WIDTH,BORDER_WIDTH + 1 + MAP_HEIGHT*TILE_HEIGHT / 2, XT_CH_GREEN," "},
     {MAP_WIDTH*TILE_WIDTH,BORDER_WIDTH + 2 + MAP_HEIGHT*TILE_HEIGHT / 2, XT_CH_GREEN,"_"},
-    {MAP_WIDTH*TILE_WIDTH - 51, UI_DIST+2,XT_CH_GREEN, "| Lives:"},
-    {MAP_WIDTH*TILE_WIDTH - 51, UI_DIST+3,XT_CH_GREEN, "| Gold:"},
-    {MAP_WIDTH*TILE_WIDTH - 51, UI_DIST+4,XT_CH_GREEN, "| Souls:"},
+    {MAP_WIDTH*TILE_WIDTH - 51, UI_DIST+2,XT_CH_GREEN, "| Level:"},
+    {MAP_WIDTH*TILE_WIDTH - 51, UI_DIST+3,XT_CH_GREEN, "| Next wave:"},
+    {MAP_WIDTH*TILE_WIDTH - 51, UI_DIST+4,XT_CH_GREEN, "| Lives:"},
+    {MAP_WIDTH*TILE_WIDTH - 51, UI_DIST+5,XT_CH_GREEN, "| Gold:"},
 };
-static int ui_size = 19;
+static int ui_size = 20;
 
 void draw_ui() {
     int i;
@@ -49,6 +50,9 @@ void draw_ui() {
     }
     draw((point_t){3,UI_DIST+1},get_sprite(TOWER));
     draw((point_t){23,UI_DIST+2},get_sprite(MONSTER));
+    //smoe hard-coded stuff to draw the time till next wave and the lives
+    
+    //the timer seconds thing is in spawn wave check to save time
 }
 
 static void init_sprites(void) {

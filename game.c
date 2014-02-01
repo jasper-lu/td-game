@@ -6,7 +6,21 @@
 #include "game.h"
 #define FPS 20
 
+static void draw_variables(game_t* game) {
+    struct timespec temp;
+    clock_gettime(CLOCK_REALTIME, &temp);
+    long lm = temp.tv_sec * NANO + temp.tv_nsec; 
+    SETPOS(MAP_WIDTH*TILE_WIDTH - 36, UI_DIST+2);
+    printf("%d", game->e_manager->level);
+    SETPOS(MAP_WIDTH*TILE_WIDTH - 36, UI_DIST+3);
+    int countdown = (game->e_manager->wave_timer-(lm-game->e_manager->wave_load))/NANO +1 ;
+    printf("%d", countdown);
+    SETPOS(MAP_WIDTH*TILE_WIDTH - 36, UI_DIST+4);
+    printf("%d", game->lives);
+    SETPOS(MAP_WIDTH*TILE_WIDTH - 36, UI_DIST+5);
+    printf("%d", game->money);
 
+}
 
 static void init_map(game_t* game, int width, int height) {
 //    printf("count\n");
@@ -36,7 +50,7 @@ int main() {
     //game_t* game = malloc(sizeof(game_t)); 
     game_t* game = init_game();
     //5 seconds to first spawn
-    init_em(&game->e_manager, 10);
+    init_em(&game->e_manager, 3);
     init_map(game, MAP_WIDTH, MAP_HEIGHT);
     point_t point;
     spawn_player(game);
@@ -99,6 +113,7 @@ int main() {
 
         xt_par0(XT_CLEAR_SCREEN);
         draw_ui();
+        draw_variables(game);
 
         draw_towers(game);
         draw(tile_convert(&game->player.point), get_sprite(PLAYER));
