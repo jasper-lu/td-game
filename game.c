@@ -43,24 +43,24 @@ static void init_map(game_t* game, int width, int height) {
     //need to check if the map is correct
 }
 
-int main() {
+static void draw_all(game_t* game){
+        xt_par0(XT_CLEAR_SCREEN);
+        draw_ui();
+        draw_variables(game);
 
-    char c;
-    setbuf(stdout,NULL);
-    //game_t* game = malloc(sizeof(game_t)); 
-    game_t* game = init_game();
-    //5 seconds to first spawn
-    init_em(&game->e_manager, 3);
-    init_map(game, MAP_WIDTH, MAP_HEIGHT);
-    point_t point;
-    spawn_player(game);
-    //this is pissing me off, cause there are 10 of the monster bundled up here for some reason
-    //set_spawn_wave(1, 10, game->e_manager);
-    //bullets move 7x faster than the speed -- estimated width/height of everything
-    //spawn_bullet(game,game->e_manager->enemy_head, (point_t){80,5}, 40, 20);
+        draw_towers(game);
+        draw(tile_convert(&game->player.point), get_sprite(PLAYER));
+        draw_bullets(game);
+        draw_enemies(game);
+}
 
-    while(1)
-    {
+static void exec_all(game_t* game) {
+        execute_bt(game);
+        execute_em(game);
+        execute_tw(game);
+}
+
+static void poll_all(game_t* game) {
 	while((c = getkey()) != KEY_NOTHING){
 
 	
@@ -89,38 +89,27 @@ int main() {
 	}else if (c == ' '){
 	} 
         }
-//look into the clear screen function, and see if it can be adapted to only changet the playing aread
-        
 
-        /*
-        char** map;
-        map = malloc(sizeof(char*) * 5); 
-        int i;
-        for (i = 0;  i < 5; ++i)
-	    map[i] = malloc(sizeof(char)*5);
+}
 
-        point_t new = astar((point_t){1,1}, (point_t){3,3}, map);
-        printf("%d, %d", new.x, new.y);
-        */
-        //printf("%c", game->map[0][0]);
+int main() {
 
- //       printf("before astar");
+    char c;
+    setbuf(stdout,NULL);
+    //game_t* game = malloc(sizeof(game_t)); 
+    game_t* game = init_game();
+    //5 seconds to first spawn
+    init_em(&game->e_manager, 3);
+    init_map(game, MAP_WIDTH, MAP_HEIGHT);
+    point_t point;
+    spawn_player(game);
+    //this is pissing me off, cause there are 10 of the monster bundled up here for some reason
+    //set_spawn_wave(1, 10, game->e_manager);
+    //bullets move 7x faster than the speed -- estimated width/height of everything
+    //spawn_bullet(game,game->e_manager->enemy_head, (point_t){80,5}, 40, 20);
 
- //       printf("after");
-        execute_bt(game);
-        execute_em(game);
-        execute_tw(game);
-
-        xt_par0(XT_CLEAR_SCREEN);
-        draw_ui();
-        draw_variables(game);
-
-        draw_towers(game);
-        draw(tile_convert(&game->player.point), get_sprite(PLAYER));
-        draw_bullets(game);
-        draw_enemies(game);
-
-
+    while(1)
+    {
         /*
         int i,j;
         for(i=0;i!= 11; ++i) {

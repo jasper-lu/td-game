@@ -171,6 +171,17 @@ static void enemy_move(enemy_t* p_e, enemy_t* prev, game_t* game) {
     if(lm - p_e-> last_moved > p_e->move_timer) {
         //check before moving
         if(enemy_check_finish(p_e, game)) {
+            //despwawn bullets
+            bullet_t* p_b = game->bullet_head;
+            bullet_t* prev_b = NULL;
+            while(p_b) {
+                if(p_b->target == p_e) {
+                    p_b = despawn_bullet(p_b, prev_b, game);
+                }else{
+                    prev_b = p_b;
+                    p_b = p_b->next;
+                }
+            }
             despawn_enemy(p_e,prev,game->e_manager);
         }else{
             point_t move = astar(p_e->point, p_e->dest, game->map);
