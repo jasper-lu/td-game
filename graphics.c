@@ -49,7 +49,7 @@ void draw_ui() {
         printf("%s", UI[i].string);
     }
     draw((point_t){3,UI_DIST+1},get_sprite(TOWER));
-    draw((point_t){23,UI_DIST+2},get_sprite(MONSTER));
+    //draw((point_t){23,UI_DIST+2},get_sprite(MONSTER));
     //smoe hard-coded stuff to draw the time till next wave and the lives
     
     //the timer seconds thing is in spawn wave check to save time

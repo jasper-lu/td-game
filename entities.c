@@ -66,7 +66,7 @@ tower_t* spawn_tower(game_t* game, int type) {
     long lm = temp.tv_sec * NANO + temp.tv_nsec;
 
     //2 times per second base?
-    *temp_tower = (tower_t) {(point_t) {p_x, p_y}, 10, 2, 5, NANO/2, lm, TOWER, game->tower_head};
+    *temp_tower = (tower_t) {(point_t) {p_x, p_y}, 10, 2, 999, NANO/2, lm, TOWER, game->tower_head};
     char ** map = game->map;
     map[p_y+1][p_x+1] = 'x';
     game->tower_head = temp_tower;
@@ -134,13 +134,9 @@ void init_em(enemy_manager_t** p_em, int timer) {
     enemy_manager_t* em = *p_em;
     em->level = 0;
     long l_temp = NANO;
-    printf("%ld", l_temp);
     //spawn in timer seconds
     em->wave_timer = (long)NANO*timer;
     em->wave_load = lm;
-    printf("wave_tiemr: %ld", em->wave_timer);
-    printf("\n%ld x %ld = %ld\n", NANO, timer, (long)NANO*timer);
-    printf("wave_load: %ld", em->wave_load);
     em->enemy_head = NULL;
 }
 
@@ -280,10 +276,10 @@ static void spawn_wave_check(enemy_manager_t* em) {
         if(i%2) {
   //          printf("hi");
             //set spawn to scale sped 
-            set_spawn_wave(em->level/3 + 1, (i * 10) / 2, 5, (em->level / 2) * 10 + 5, em);
+            set_spawn_wave(em->level/3 + 1, (i * 10) / 2, 5, 10 + em->level, em);
         }else{
    //         printf("o");
-            set_spawn_wave(em->level/3 + 1, (i*10) / 2 + 5, 5, (em->level / 2) * 10 + 5, em);
+            set_spawn_wave(em->level/3 + 1, (i*10) / 2 + 5, 5, 10 + em->level, em);
         }
         em->wave_load = lm;
     }
@@ -319,13 +315,11 @@ static int in_range(point_t* center, point_t* node, int r) {
 }
 
 void set_spawn_wave(int speed, int health, int spawn_numb, int money, enemy_manager_t* em) {
-    printf("spawn wave set");
     struct timespec temp;
     clock_gettime(CLOCK_REALTIME, &temp);
     long lm = temp.tv_sec * NANO + temp.tv_nsec;
     em->spawn_numb = spawn_numb;
     //this one will have the thing be wonky
-    printf("the speed is: %lu\n", em->speed);
     em->speed = speed;
     em->last_moved = lm;
     em->health = health;
