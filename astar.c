@@ -45,7 +45,7 @@ int compare(Node* lhs, Node * rhs)
     return (lhs->f + lhs->h) - (rhs->f + rhs->h);
 }
 
-//holy shit this code was written so long ago i dont eevn remember it anymore....i'm going to assume it is magic. NTS: comment code more in the future
+//inserts a node into the node heap so that the heap remains ordered
 void insert(Node *x, Node_heap* heap)
 {
         heap->size++;
@@ -99,7 +99,7 @@ Node* getMin(Node_heap *heap)
     return heap->heap[1];
 }
 
-//end magic code stuff
+//frees the heap
 int close_heap(Node_heap *heap) { 
     int i;
     for(i = 1; i <= heap->size; ++i)
@@ -115,34 +115,28 @@ int p_equals(point_t lhs, point_t rhs)
     else
 	return 0;
 }
-//fuck some more magic code....
+
+//adds all of the current node's neighbors
 int add_neighs(point_t home, point_t* neigh, char **map)
 {
-//    printf("adding neigh\n");
     int n = 0;
-//	printf("and one %d, %d\n", home.x,home.y);
     if(map[home.y+1][home.x] != 'x' )
     {
 	neigh[n++] = (point_t){home.x,home.y+1};
-//	printf("and two\n");
     }
     if(map[home.y][home.x+1] != 'x' )
     {
-//	printf("and 3\n");
 	neigh[n++] = (point_t){home.x+1,home.y};
     }
     if(map[home.y-1][home.x] != 'x' )
     {
-//	printf("and 4\n");
 	neigh[n++] = (point_t){home.x,home.y-1};
     }
     if(map[home.y][home.x-1] != 'x' )
     {
-//	printf("and 5\n");
 	neigh[n++] = (point_t){home.x-1,home.y};
     }
 
-//    printf("addneights this round: %d\n", n);
     return n;
 }
 
@@ -154,23 +148,19 @@ int calcH(point_t curr, point_t end)
 int isIn(Node** in, int size, point_t p)
 {
     int n;
-  //  printf("start\n");
     for(n = 0;n<= size; ++n)
     {
 	//if it doesnt go past size
-//	printf("P works -- %d %d \n", p.x, p.y);
 	if(n!=0)
-//	    printf("heap works -- %d %d \n", in[n]->p.x,in[n]->p.x);
 	if(in[n] != NULL && p_equals(in[n]->p,p))
 	    return 1;
     }
- //   printf("yolo\n");
     return 0;
 }
 
 point_t astar(point_t begin, point_t end, char** map)
 {
-    //some horribly written code to fix the transition mistakes, namely, map is formatted with 1,1 being hte first open spot vs the entity point class having 0,0 being the first
+    //to fix transition mistakes. map is formatted with 1,1 being the first open spot for logistics, but entity point class has 0,0 being the first as per convention
     begin.x++;
     begin.y++;
     end.x++;
@@ -183,9 +173,7 @@ point_t astar(point_t begin, point_t end, char** map)
     int n =0;
     while(!(p_equals(getMin(open)->p,end)))
     {
-        //printf("\n\nworks up to this place \n");
 	Node* current = pop(open);
-        //printf("\n\nworks beforeh ere too \n");
 	closed[n] = current;
 	++n;
 	point_t* neighs = malloc(sizeof(point_t) * 4);
@@ -198,14 +186,11 @@ point_t astar(point_t begin, point_t end, char** map)
 	{
 	    if(!(isIn(open->heap, open->size,neighs[c])) && !(isIn(closed,n-1,neighs[c])))
 	    {
-        //        printf("hueristic for %d -- %d,%d: %d", c, neighs[c].x, neighs[c].y, calcH(neighs[c], end));
 		Node* neigh = init_NodeA(neighs[c],cost,calcH(neighs[c],end),current);
-        //        printf("one two \n");
 		insert(neigh,open);
 	    }
 	}
 	free(neighs);
-//        printf("out?");
     }
     Node * final = pop(open);
     while(!(p_equals(final->parent->p, begin)))
@@ -224,7 +209,7 @@ point_t astar(point_t begin, point_t end, char** map)
     
     free(closed);
     close_heap(open);
-    //start fix for the implementation of points, see earlier comment. I'm too lazy to refactor the code
+
     ret.x--;
     ret.y--;
     return ret;
